@@ -1,7 +1,6 @@
-from server import AgentNodes
-from server import agentNodesLock
-
 import pickle
+import json
+
 # 支持的命令
 # agent 端的命令
 # 1. agent 只有一种命令, monitored hostname, hostname 是本主机的名称
@@ -18,22 +17,55 @@ import pickle
 # 4. 获取某台主机的disk有关信息 diskinfo hostname
 # 5. 获取某台主机的network有关信息 netinfo hostname
 # 6. 获取传感器sensors的有关信息 sensorinfo hostname
-# 7. 获取进程process有关信息 procinfo hostname\
-
-def handleClientLs(conn):
-    agentNodesLock.acquire()
-    # 发送所有 agent 的信息给client
-    table_data = []
-    for node in AgentNodes:
-        tuple = []
-        tuple.append(node.name)
-        tuple.append(node.addr)
-        table_data.append(tuple)
-
-    agentNodesLock.release()
-    conn.sendall(pickle.dumps(table_data))
-
+# 7. 获取进程process有关信息 procinfo hostname
 
 # server端的命令
-# 向 agent 发送心跳 cmd = heartbeat
+def requireCpuInfoFromAgent(agentConn):
+    command = {
+        "node": "server",
+        "cmd": "cpuinfo",
+    }
+    message = json.dumps(command).encode('utf-8')
+    agentConn.sendall(message)
+    recvdata = agentConn.recv(2048)
 
+    cpuInfo = json.loads(recvdata.decode('utf-8'))
+    return cpuInfo
+
+
+def requireMemInfoFromAgent(agentConn):
+    command = {
+        "node": "server",
+        "cmd": "meminfo",
+    }
+    message = json.dumps(command).encode('utf-8')
+    agentConn.sendall(message)
+    recvdata = agentConn.recv(2048)
+
+    memInfo = json.loads(recvdata.decode('utf-8'))
+    return memInfo
+
+
+def requireDiskInfoFromAgent(agentConn):
+    command = {
+        "node": "server",
+        "cmd": "diskinfo",
+    }
+    message = json.dumps(command).encode('utf-8')
+    agentConn.sendall(message)
+    recvdata = agentConn.recv(2048)
+
+    diskInfo = json.loads(recvdata.decode('utf-8'))
+    return diskInfo
+
+def requireSensorInfoFromAgent(agentConn):
+    command = {
+        "node": "server",
+        "cmd": "sensorinfo",
+    }
+    message = json.dumps(command).encode('utf-8')
+    agentConn.sendall(message)
+    recvdata = agentConn.recv(2048)
+
+    sensorInfo = json.loads(recvdata.decode('utf-8'))
+    return sensorInfo

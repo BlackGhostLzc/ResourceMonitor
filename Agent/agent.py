@@ -1,6 +1,7 @@
 import socket
 import psutil
 import json
+import resource
 
 # 服务器地址和端口
 HOST = '127.0.0.1'
@@ -43,6 +44,32 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         if command["cmd"] == "heartbeat":
             # print("收到 1 个心跳")
             pass
+
+        if command["cmd"] == "cpuinfo":
+            # 获取相关的资源并发送
+            data = resource.requireCpuInfo()
+            print(data)
+            message = json.dumps(data).encode('utf-8')
+            s.sendall(message)
+
+        elif command["cmd"] == "meminfo":
+            # 获取相关的资源并发送
+            data = resource.requireMemInfo()
+            print(data)
+            message = json.dumps(data).encode('utf-8')
+            s.sendall(message)
+
+        elif command["cmd"] == "diskinfo":
+            data = resource.requireDiskInfo()
+            print(data)
+            message = json.dumps(data).encode('utf-8')
+            s.sendall(message)
+
+        elif command["cmd"] == "sensorinfo":
+            data = resource.requireSensorInfo()
+            print(data)
+            message = json.dumps(data).encode('utf-8')
+            s.sendall(message)
 
         # 可能是需要硬件资源信息
 

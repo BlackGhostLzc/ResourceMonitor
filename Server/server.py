@@ -4,6 +4,7 @@ import time
 import pickle
 import util
 import json
+import cmd
 
 # 服务器地址和端口
 HOST = '127.0.0.1'
@@ -54,36 +55,148 @@ def handleClientLs(conn):
     agentNodesLock.release()
     conn.sendall(pickle.dumps(table_data))
 
+def handleClientCpuInfo(conn, hostname):
+    # 1.从 AgentNodes 中找到对应的连接和主机
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 cpu 数据")
+
+    cpuInfo = cmd.requireCpuInfoFromAgent(agentConn)
+    print(cpuInfo)
+
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(cpuInfo).encode('utf-8'))
+
+
+def handleClientMemInfo(conn, hostname):
+    # 1.从 AgentNodes 中找到对应的连接和主机
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 mem 数据")
+
+    memInfo = cmd.requireMemInfoFromAgent(agentConn)
+    print(memInfo)
+
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(memInfo).encode('utf-8'))
+
+def handleClientDiskInfo(conn, hostname):
+    # 1.从 AgentNodes 中找到对应的连接和主机
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 disk 数据")
+
+    diskInfo = cmd.requireDiskInfoFromAgent(agentConn)
+    print(diskInfo)
+
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(diskInfo).encode('utf-8'))
+
+
+def handleClientProcInfo(conn, hostname):
+    pass
+
+
+def handleClientSensorInfo(conn, hostname):
+    # 1.从 AgentNodes 中找到对应的连接和主机
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 sensor 数据")
+
+    sensorInfo = cmd.requireSensorInfoFromAgent(agentConn)
+    print(sensorInfo)
+
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(sensorInfo).encode('utf-8'))
+
+def handleClientNetInfo(conn, hostname):
+    pass
 
 def handleClient(conn):
     # 这个线程负责处理所有和 client 的交互
     while True:
         # 不断读取用户的输入命令
         message = conn.recv(1024)
+
+        # 用户的输入是什么？ 是 1 个 json 字符串
         command = json.loads(message.decode('utf-8'))
+        print(command)
         # 判断 client 命令的类型
         # 这是一个 json 类型的格式
 
         if command["cmd"] == "ls":
             handleClientLs(conn)
         elif command["cmd"] == "cpuinfo":
-            continue
+            handleClientCpuInfo(conn, command["name"])
 
         elif command["cmd"] == "meminfo":
+            handleClientMemInfo(conn, command["name"])
             continue
 
         elif command["cmd"] == "diskinfo":
+            handleClientDiskInfo(conn, command["name"])
             continue
 
         elif command["cmd"] == "procinfo":
+            handleClientProcInfo(conn, command["name"])
             continue
 
         elif command["cmd"] == "sensorinfo":
+            print("server收到一个client sensor")
+            handleClientSensorInfo(conn, command["name"])
             continue
 
         elif command["cmd"] == "netinfo":
+            handleClientNetInfo(conn, command["name"])
             continue
-
 
     return
 
