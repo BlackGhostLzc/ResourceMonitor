@@ -39,8 +39,9 @@ def cpuinfo(conn, hostname):
     message = json.dumps(data).encode('utf-8')
     conn.sendall(message)
     recvdata = conn.recv(2048)
-    cpuInfo = json.loads(recvdata.decode('utf-8'))
-    print(cpuInfo)
+    data = json.loads(recvdata.decode('utf-8'))
+
+    display.displayCpuInfo(data)
 
     return
 
@@ -54,7 +55,7 @@ def meminfo(conn, hostname):
     conn.sendall(message)
     recvdata = conn.recv(2048)
     memInfo = json.loads(recvdata.decode('utf-8'))
-    print(memInfo)
+    display.displayMemInfo(memInfo)
 
 
 def diskinfo(conn, hostname):
@@ -67,7 +68,7 @@ def diskinfo(conn, hostname):
     conn.sendall(message)
     recvdata = conn.recv(2048)
     diskInfo = json.loads(recvdata.decode('utf-8'))
-    print(diskInfo)
+    display.displayDiskInfo(diskInfo)
 
 
 def netinfo(conn, hostname):

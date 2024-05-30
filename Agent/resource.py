@@ -2,7 +2,7 @@ import psutil
 
 def requireCpuInfo():
     cpu_count = psutil.cpu_count()
-    cpu_percent = psutil.cpu_percent()
+    cpu_percent = psutil.cpu_percent(percpu=True, interval=1)
     cpu_times = psutil.cpu_times()
     cpu_freq = psutil.cpu_freq()
     cpu_stats = psutil.cpu_stats()
@@ -46,5 +46,4 @@ def requireSensorInfo():
     data = {
         "sensors_battery": sensors_battery,
     }
-
     return data

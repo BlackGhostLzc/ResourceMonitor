@@ -4,7 +4,7 @@ import cmd
 import json
 
 # 服务器地址和端口
-HOST = '127.0.0.1'
+HOST = '10.196.29.6'
 PORT = 65432
 
 commandList = ["ls", "cpuinfo", "meminfo", "diskinfo", "netinfo", "sensorinfo", "procinfo"]
