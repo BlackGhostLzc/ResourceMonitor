@@ -27,7 +27,7 @@ def ls(conn):
     # TODO()
     # 炫酷输出
     display.displayLs(list)
-    print(list)
+
 
 
 def cpuinfo(conn, hostname):
@@ -88,7 +88,17 @@ def sensorinfo(conn, hostname):
 
 
 def procinfo(conn, hostname):
-    pass
+    data = {
+        "node": "client",
+        "cmd": "procinfo",
+        "name": hostname,
+    }
+    message = json.dumps(data).encode('utf-8')
+    conn.sendall(message)
+    recvdata = conn.recv(4096)
+    procInfo = json.loads(recvdata.decode('utf-8'))
+    display.displayProcInfo(procInfo)
+
 
 
 command_mapping = {

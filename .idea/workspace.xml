@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="046a6446-7440-49fb-9ad1-24d2e738208c" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/test/proc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Agent/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/Agent/agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Agent/resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/Agent/resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_terminal/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_terminal/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_terminal/cmd.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_terminal/cmd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_terminal/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_terminal/display.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/cmd.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/cmd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/server.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2gRJZkuSagTfJshNZO7LvjhRwmq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/24273/Desktop/SE_Project/Client_terminal/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.postfix.templates&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\24273\Desktop\SE_Project\Client_terminal\images" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\24273\Desktop\SE_Project\test" />
+      <recent name="C:\Users\24273\Desktop\SE_Project\" />
+      <recent name="C:\Users\24273\Desktop\SE_Project\Client_web" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="046a6446-7440-49fb-9ad1-24d2e738208c" name="更改" comment="" />
+      <created>1715654513314</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715654513314</updated>
+      <workItem from="1715654514349" duration="9275000" />
+      <workItem from="1715685399255" duration="3752000" />
+      <workItem from="1715823856849" duration="3286000" />
+      <workItem from="1715829428186" duration="3406000" />
+      <workItem from="1715865393646" duration="1932000" />
+      <workItem from="1715912564739" duration="3981000" />
+      <workItem from="1716001935987" duration="8138000" />
+      <workItem from="1716085085008" duration="9013000" />
+      <workItem from="1716190298546" duration="653000" />
+      <workItem from="1716259942849" duration="609000" />
+      <workItem from="1716339441093" duration="5716000" />
+      <workItem from="1716431916534" duration="635000" />
+      <workItem from="1716641803081" duration="600000" />
+      <workItem from="1716706104508" duration="1290000" />
+      <workItem from="1716775096247" duration="8750000" />
+      <workItem from="1716944700111" duration="7948000" />
+      <workItem from="1716964869693" duration="9702000" />
+      <workItem from="1716981806065" duration="4997000" />
+      <workItem from="1717033418147" duration="8032000" />
+      <workItem from="1717073574687" duration="685000" />
+      <workItem from="1717119789414" duration="634000" />
+      <workItem from="1717208002598" duration="1201000" />
+      <workItem from="1717330460894" duration="587000" />
+      <workItem from="1717395083988" duration="604000" />
+      <workItem from="1717659846446" duration="136000" />
+      <workItem from="1717729241139" duration="7852000" />
+      <workItem from="1717830565128" duration="1158000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/SE_Project$sensor.coverage" NAME="sensor 覆盖结果" MODIFIED="1716105715463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/SE_Project$diskinfo.coverage" NAME="diskinfo 覆盖结果" MODIFIED="1716105209857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/SE_Project$test.coverage" NAME="test 覆盖结果" MODIFIED="1715655425984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+  </component>
+</project>

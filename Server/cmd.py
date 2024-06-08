@@ -69,3 +69,16 @@ def requireSensorInfoFromAgent(agentConn):
 
     sensorInfo = json.loads(recvdata.decode('utf-8'))
     return sensorInfo
+
+
+def requireProcInfoFromAgent(agentConn):
+    command = {
+        "node": "server",
+        "cmd": "procinfo",
+    }
+    message = json.dumps(command).encode('utf-8')
+    agentConn.sendall(message)
+    recvdata = agentConn.recv(2048)
+
+    procInfo = json.loads(recvdata.decode('utf-8'))
+    return procInfo

@@ -4,7 +4,7 @@ import json
 import resource
 
 # 服务器地址和端口
-HOST = '10.196.29.6'
+HOST = '10.196.11.11'
 PORT = 65432
 
 # 创建一个套接字对象
@@ -67,6 +67,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         elif command["cmd"] == "sensorinfo":
             data = resource.requireSensorInfo()
+            print(data)
+            message = json.dumps(data).encode('utf-8')
+            s.sendall(message)
+
+        elif command["cmd"] == "procinfo":
+            data = resource.requireProcInfo()
             print(data)
             message = json.dumps(data).encode('utf-8')
             s.sendall(message)

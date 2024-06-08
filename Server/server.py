@@ -7,7 +7,7 @@ import json
 import cmd
 
 # 服务器地址和端口
-HOST = '127.0.0.1'
+HOST = '10.196.11.11'
 PORT = 65432
 
 agentNodesLock = threading.Lock()
@@ -130,7 +130,27 @@ def handleClientDiskInfo(conn, hostname):
 
 
 def handleClientProcInfo(conn, hostname):
-    pass
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 proc 数据")
+
+    procInfo = cmd.requireProcInfoFromAgent(agentConn)
+    print(procInfo)
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(procInfo).encode('utf-8'))
+
 
 
 def handleClientSensorInfo(conn, hostname):

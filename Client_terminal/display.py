@@ -21,7 +21,42 @@ def curseInit():
 
 
 def displayLs(list):
-    pass
+    if(len(list) > 8):
+        for elem in list:
+            print(elem)
+        return
+
+    curseInit()
+    ls_win = curses.newwin(len(list) + 7, 40, 0, 0)
+    ls_win.attron(curses.color_pair(1))
+    ls_win.border(0)
+    ls_win.attroff(curses.color_pair(1))
+
+    ls_win.addstr(0, 2, "Monitored-Host")
+
+    data = []
+    data.append(["name", "ip", "port"])
+
+    hostsNum = len(list)
+
+    ls_win.attron(curses.color_pair(5))
+    ls_win.addstr(1, 1, f"Total monitored hosts: {hostsNum}")
+    ls_win.attroff(curses.color_pair(5))
+
+    for elem in list:
+        data.append([elem[0], elem[1][0], elem[1][1]])
+
+    table = tabulate(data, headers="firstrow", tablefmt="grid")
+    lines = table.split('\n')
+    for i, line in enumerate(lines):
+        if i == 0 or i == 1 or i == 2:
+            ls_win.addstr(i + 2, 1, line, curses.color_pair(3))
+            continue
+        if i >= 2:
+            ls_win.addstr(i + 2, 1, line, curses.color_pair(i % 7 + 1))
+
+    ls_win.getch()
+    curses.endwin()
 
 
 def displayCpuInfo(data):
@@ -252,6 +287,42 @@ def displayDiskInfo(diskInfo):
     disk_usage_win.getch()
     curses.endwin()
 
+
+def displayProcInfo(procInfo):
+    procList = procInfo["procinfo"]
+    procNum = procInfo["procnum"]
+
+    curseInit()
+    proc_usage_win = curses.newwin(20, 70, 0, 0)
+
+    proc_usage_win.attron(curses.color_pair(1))
+    proc_usage_win.border(0)
+    proc_usage_win.attroff(curses.color_pair(1))
+
+    proc_usage_win.addstr(0, 2, "proc list")
+    proc_usage_win.addstr(1, 2, f"total process number is: {procNum}")
+
+    procNum = 5
+    proc_usage_win.addstr(3, 2, f"top {procNum} process")
+
+    proc_table = []
+    proc_table.insert(0, ["pid", "name", "cpu"])
+    for i in range(5):
+        percent = f"{procList[i * 3 + 2]:.2f}%"
+        proc_table.append([procList[i * 3], procList[i * 3 + 1], percent])
+
+    table = tabulate(proc_table, headers="firstrow", tablefmt="grid")
+    lines = table.split('\n')
+    for i, line in enumerate(lines):
+        if i == 0 or i == 1 or i == 2:
+            proc_usage_win.addstr(i + 4, 1, line, curses.color_pair(3))
+            continue
+        if i >= 2:
+            proc_usage_win.addstr(i + 4, 1, line, curses.color_pair(i % 7 + 1))
+
+    proc_usage_win.refresh()
+    proc_usage_win.getch()
+    curses.endwin()
 
 
 def draw_bar(win, y, x, color, value, totalValue, label):
