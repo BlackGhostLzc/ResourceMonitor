@@ -32,7 +32,6 @@ def requireCpuInfoFromAgent(agentConn):
     cpuInfo = json.loads(recvdata.decode('utf-8'))
     return cpuInfo
 
-
 def requireMemInfoFromAgent(agentConn):
     command = {
         "node": "server",
@@ -44,7 +43,6 @@ def requireMemInfoFromAgent(agentConn):
 
     memInfo = json.loads(recvdata.decode('utf-8'))
     return memInfo
-
 
 def requireDiskInfoFromAgent(agentConn):
     command = {

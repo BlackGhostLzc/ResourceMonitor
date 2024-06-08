@@ -2,9 +2,10 @@ import socket
 import threading
 import time
 import pickle
-import util
 import json
+
 import cmd
+import util
 
 # 服务器地址和端口
 HOST = '10.196.11.11'
