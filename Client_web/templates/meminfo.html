@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Information</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Memory 信息</h1>
+    <h2>Virtual Memory</h2>
+    <table>
+        <tr>
+            <th>属性</th>
+            <th>值</th>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{ memory_info.virtual_mem[0] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Available</td>
+            <td>{{ memory_info.virtual_mem[1] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Percent</td>
+            <td>{{ memory_info.virtual_mem[2] }} %</td>
+        </tr>
+        <tr>
+            <td>Used</td>
+            <td>{{ memory_info.virtual_mem[3] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Free</td>
+            <td>{{ memory_info.virtual_mem[4] }} bytes</td>
+        </tr>
+    </table>
+
+    <h2>Swap Memory</h2>
+    <table>
+        <tr>
+            <th>属性</th>
+            <th>值</th>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{ memory_info.swap_mem[0] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Used</td>
+            <td>{{ memory_info.swap_mem[1] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Free</td>
+            <td>{{ memory_info.swap_mem[2] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Percent</td>
+            <td>{{ memory_info.swap_mem[3] }} %</td>
+        </tr>
+        <tr>
+            <td>Swap In</td>
+            <td>{{ memory_info.swap_mem[4] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Swap Out</td>
+            <td>{{ memory_info.swap_mem[5] }} bytes</td>
+        </tr>
+    </table>
+
+    <button onclick="location.href='/'" type="button">返回首页</button>
+</body>
+</html>

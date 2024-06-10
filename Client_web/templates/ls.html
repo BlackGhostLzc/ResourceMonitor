@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LS Page</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Hosts:</h2>
+    <table>
+        <tr>
+            <th>Host Name</th>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Action 1</th>
+            <th>Action 2</th>
+            <th>Action 3</th>
+            <th>Action 4</th>
+        </tr>
+    {% for host in data %}
+        <tr>
+            <td>{{ host[0] }}</td>
+            <td>{{ host[1][0] }}</td>
+            <td>{{ host[1][1] }}</td>
+            <td><button type="CPU Info" onclick="cpuInfo('{{ host[0] }}')">CPU Info</button></td>
+            <td><button type="Mem Info" onclick="memInfo('{{ host[0] }}')">Mem Info</button></td>
+            <td><button type="Disk Info" onclick="diskInfo('{{ host[0] }}')">Disk Info</button></td>
+            <td><button type="Proc Info" onclick="procInfo('{{ host[0] }}')">Proc Info</button></td>
+        </tr>
+    {% endfor %}
+    </table>
+    <button onclick="location.href='/'" type="button">返回首页</button>
+
+    <script>
+        function cpuInfo(host) {
+            window.location.href = '/cpuinfo/' + host;
+        }
+        function memInfo(host) {
+            window.location.href = '/meminfo/' + host;
+        }
+        function diskInfo(host) {
+            window.location.href = '/diskinfo/' + host;
+        }
+        function procInfo(host) {
+            window.location.href = '/procinfo/' + host;
+        }
+
+
+    </script>
+</body>
+</html>
+
+

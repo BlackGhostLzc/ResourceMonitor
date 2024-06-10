@@ -158,10 +158,6 @@ def displayCpuInfo(data):
     # Restore terminal to original state
     curses.endwin()
 
-    # Wait for user input to exit
-    cpu_win.getch()
-    # Restore terminal to original state
-    curses.endwin()
 
 
 
@@ -286,6 +282,7 @@ def displayDiskInfo(diskInfo):
     disk_part_win.refresh()
     disk_usage_win.getch()
     curses.endwin()
+
 
 
 def displayProcInfo(procInfo):

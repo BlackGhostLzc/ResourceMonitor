@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disk Information</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Disk 信息</h1>
+
+    <h2>Disk Partitions</h2>
+    <table>
+        <tr>
+            <th>设备名称</th>
+            <th>挂载点</th>
+            <th>文件系统类型</th>
+            <th>挂载选项</th>
+            <th>最大文件数</th>
+            <th>最大路径长度</th>
+        </tr>
+        {% for partition in disk_info.disk_partions %}
+        <tr>
+            <td>{{ partition[0] }}</td>
+            <td>{{ partition[1] }}</td>
+            <td>{{ partition[2] }}</td>
+            <td>{{ partition[3] }}</td>
+            <td>{{ partition[4] }}</td>
+            <td>{{ partition[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Disk Usage</h2>
+    <table>
+        <tr>
+            <th>属性</th>
+            <th>值</th>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td>{{ disk_info.disk_usage[0] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Used</td>
+            <td>{{ disk_info.disk_usage[1] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Free</td>
+            <td>{{ disk_info.disk_usage[2] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Percent</td>
+            <td>{{ disk_info.disk_usage[3] }} %</td>
+        </tr>
+    </table>
+
+    <h2>Disk IO Counters</h2>
+    <table>
+        <tr>
+            <th>属性</th>
+            <th>值</th>
+        </tr>
+        <tr>
+            <td>Read Count</td>
+            <td>{{ disk_info.disk_io_counters[0] }}</td>
+        </tr>
+        <tr>
+            <td>Write Count</td>
+            <td>{{ disk_info.disk_io_counters[1] }}</td>
+        </tr>
+        <tr>
+            <td>Read Bytes</td>
+            <td>{{ disk_info.disk_io_counters[2] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Write Bytes</td>
+            <td>{{ disk_info.disk_io_counters[3] }} bytes</td>
+        </tr>
+        <tr>
+            <td>Read Time</td>
+            <td>{{ disk_info.disk_io_counters[4] }} ms</td>
+        </tr>
+        <tr>
+            <td>Write Time</td>
+            <td>{{ disk_info.disk_io_counters[5] }} ms</td>
+        </tr>
+    </table>
+
+    <button onclick="location.href='/'" type="button">返回首页</button>
+</body>
+</html>

@@ -8,7 +8,7 @@ import cmd
 import util
 
 # 服务器地址和端口
-HOST = '10.196.11.11'
+HOST = '10.195.50.135'
 PORT = 65432
 
 agentNodesLock = threading.Lock()
@@ -183,6 +183,7 @@ def handleClientNetInfo(conn, hostname):
 
 def handleClient(conn):
     # 这个线程负责处理所有和 client 的交互
+    print("A new client comes in")
     while True:
         # 不断读取用户的输入命令
         message = conn.recv(1024)
