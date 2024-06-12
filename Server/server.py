@@ -7,9 +7,6 @@ import json
 import cmd
 import util
 
-# 服务器地址和端口
-HOST = '10.195.50.135'
-PORT = 65432
 
 agentNodesLock = threading.Lock()
 
@@ -26,8 +23,6 @@ def handleAgent(conn, cmd, name, addr):
     print("A new agent comes in")
 
     # 发送连接成功相应
-    response = "ok"
-    conn.sendall(response.encode())
     while(True):
         # 发送 HeartBeat
         command = {
@@ -239,23 +234,42 @@ def handleConn(conn, addr):
             handleClient(conn)
 
 
-# 创建一个套接字对象
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # 将套接字绑定到指定的地址和端口
-    s.bind((HOST, PORT))
-    # 开始监听连接
-    s.listen()
+def listen_for_broadcast():
+    udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    udp_sock.bind(('', 12345))  # 12345 是广播端口
 
-    print("Server is listening...")
-
-    # 开启一个线程，向所有 agent 发送心跳
-    # heartbeatThread = threading.Thread(target=broadcastHeartBeat)
-    # heartbeatThread.start()
+    print("Server listening for broadcasts on port 12345")
 
     while True:
-        # 接受客户端连接
-        conn, addr = s.accept()
+        data, addr = udp_sock.recvfrom(1024)
+        if data.decode() == "agent_address":
+            print(f"Received broadcast from {addr}")
+            start_tcp_connection(addr[0])
+
+def start_tcp_connection(client_host):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
+        client_port = 54321  # 客户端监听的端口
+        tcp_sock.connect((client_host, client_port))
+
+        response = tcp_sock.recv(1024).decode()
+        if response != "ok":
+            print("Connect to agent failed")
+            exit(1)
+        # 成功接受后
+        print("connect to agent success")
+        handleAgent(tcp_sock, cmd="cmd", name="name", addr=(client_host, client_port))
+
+
+
+
+
+
 
         # 开启一个新的线程处理这个连接
-        thread = threading.Thread(target=handleConn, args=(conn,addr))
-        thread.start()
+        #thread = threading.Thread(target=handleConn, args=(tcp_sock, (client_host, client_port)))
+        #thread.start()
+
+
+
+listen_for_broadcast()
