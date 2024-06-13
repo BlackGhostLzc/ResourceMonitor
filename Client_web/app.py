@@ -2,10 +2,11 @@ from flask import Flask, render_template, jsonify
 import socket
 import json
 import pickle
+import os
 
 app = Flask(__name__)
 
-HOST = '10.195.50.135'  # 服务器IP地址
+HOST = '10.196.26.165'  # 服务器IP地址
 PORT = 65432            # 服务器端口
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
