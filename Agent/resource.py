@@ -3,9 +3,9 @@ import psutil
 def requireCpuInfo():
     cpu_count = psutil.cpu_count()
     cpu_percent = psutil.cpu_percent(percpu=True, interval=1)
-    cpu_times = psutil.cpu_times()
-    cpu_freq = psutil.cpu_freq()
-    cpu_stats = psutil.cpu_stats()
+    cpu_times = psutil.cpu_times()._asdict()
+    cpu_freq = psutil.cpu_freq()._asdict()
+    cpu_stats = psutil.cpu_stats()._asdict()
 
     data = {
         "cpu_count": cpu_count,

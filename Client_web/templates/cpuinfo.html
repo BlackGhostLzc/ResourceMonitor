@@ -2,9 +2,13 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
+
+
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,36 +17,72 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .header {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
-            font-size: 14px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
+        .header button {
+            /* Add some space between the heading and the button */
+            margin: 0 20px 0 0;
         }
-        th {
-            background-color: #f2f2f2;
+
+        .hbar {
+            display: flex;
+            justify-content: space-between; /* Align items to the left */
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+        .center-div{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Aligns children to the top */
+            align-items: center; /* Centers horizontally */
+            padding: 10px; /* Just for spacing */
+        }
+
+        ul.modern-list {
+            list-style: none; /* Remove default bullet points */
+            padding: 0;
+            margin: 0;
+        }
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0; /* Adjust spacing for custom bullet */
+            margin-bottom: 10px; /* Spacing between list items */
+            color: #333; /* Text color */
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
             font-weight: bold;
-            color: #333;
-            text-transform: uppercase;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
-        tr:hover {
-            background-color: #f1f1f1;
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
+
         #myChart {
             width: 700px;  /* Specific width for the canvas */
             height: auto;  /* Auto height to maintain aspect ratio */
@@ -55,61 +95,24 @@
 
 <body>
     <div class="container">
-        <h1>CPU 信息</h1>
-        <table>
-            <tr>
-                <th>属性</th>
-                <th>值</th>
-            </tr>
-            <tr>
-                <td>CPU 核心数</td>
-                <td>{{ data.cpu_count }}</td>
-            </tr>
-            <tr>
-                <td>CPU 时间 (s)</td>
-                <td>
-                    <ul>
-                    {% for time in data.cpu_times %}
-                        <li>{{ time }}</li>
-                    {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td>CPU 频率 (MHz)</td>
-                <td>
-                    <ul>
-                    {% for freq in data.cpu_freq %}
-                        <li>{{ freq }}</li>
-                    {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td>CPU 统计</td>
-                <td>
-                    <ul>
-                    {% for stat in data.cpu_stats %}
-                        <li>{{ stat }}</li>
-                    {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-        </table>
-
-
+        <div class="header">
+            <button class="button" onclick="location.href='/ls'" type="button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>CPU 信息</h1>
+        </div>
 
         <canvas id="myChart" width="250" height="100"></canvas>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <script>
         // 获取 Canvas 元素
-        var cpu_percent = {{data.cpu_percent | tojson}}; // 将服务器端的CPU使用率数据渲染为JavaScript数组
-        var labels = cpu_percent.map((_, i) => `CPU${i}`);
+        const ctx = document.getElementById('myChart').getContext('2d');
 
-        var ctx = document.getElementById('myChart').getContext('2d');
+        const cpu_percent = {{data.cpu_percent | tojson}}; // 将服务器端的CPU使用率数据渲染为JavaScript数组
+        const labels = cpu_percent.map((_, i) => `CPU ${i}`);
+
         // 创建柱状图
-        var barChart = new Chart(ctx, {
+        const barChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -129,8 +132,15 @@
                         min: 0,
                         max: 100,
                         ticks: {
-                                    callback: function (value) { return value + "%" }
-                                },
+                            callback: function (value) {
+                                return value + "%"
+                            }
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false // Hide vertical grid lines
+                        }
                     }
                 },
                 layout: {
@@ -142,32 +152,62 @@
                     }
                 },
                 plugins: {
-                            legend: {
-                                display: true,
-                                labels: {
-                                    color: 'black' // 字体颜色
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'black' // 字体颜色
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
                                 }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        var label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += context.parsed.y.toFixed(1) + '%'; // Set precision to 2 decimal places for tooltips
-                                        }
-                                        return label;
-                                    }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toFixed(1) + '%'; // Set precision to 2 decimal places for tooltips
                                 }
+                                return label;
                             }
                         }
+                    }
+                }
             }
         });
         </script>
 
-        <button onclick="location.href='/'" type="button">返回首页</button>
+
+        <div class="hbar">
+            <div class="center-div">
+                <h4>CPU 核心数</h4>
+                {{ data.cpu_count }}
+            </div>
+            <div class="center-div">
+                <h4>CPU 时间 (s)</h4>
+                <ul class="modern-list">
+                    {% for label, time in data.cpu_times.items() %}
+                        <li>{{ label | format_label }}: {{ time }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="center-div">
+                <h4>CPU 频率 (MHz)</h4>
+                <ul class="modern-list">
+                    {% for label, freq in data.cpu_freq.items() %}
+                        <li>{{ label | format_label }}: {{ freq }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="center-div">
+                <h4>CPU 统计</h4>
+                    <ul class="modern-list">
+                    {% for label, stat in data.cpu_stats.items() %}
+                        <li>{{ label | format_label }}: {{ stat }}</li>
+                    {% endfor %}
+                    </ul>
+            </div>
+        </div>
     </div>
 </body>
 </html>

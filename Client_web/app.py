@@ -36,6 +36,11 @@ def get_ls():
         return {"error": str(e)}
 
 
+# Custom filter to replace underscores with spaces and capitalize the first letter
+@app.template_filter('format_label')
+def format_label(value):
+    return value.replace('_', ' ').capitalize()
+
 @app.route('/')
 def index():
     return render_template('index.html')
