@@ -7,23 +7,24 @@ import resource
 
 connect_state = 0
 
-def get_host_address():
-    # 获取本机主机名
-    host = socket.gethostname()
-    # 获取本机IP地址
-    ip_address = socket.gethostbyname(host)
-    return ip_address
-
 def broadcast_address():
     udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    message = "agent_address"
+
+    data = {
+        "node": "agent",
+        "cmd": "monitored",
+        "name": socket.gethostname(),
+    }
+
+    message = json.dumps(data).encode('utf-8')
+
     broadcast_address = ('<broadcast>', 12345)  # 12345 是广播端口
 
     global connect_state
     try:
         while connect_state == 0 :
-            udp_sock.sendto(message.encode(), broadcast_address)
+            udp_sock.sendto(message, broadcast_address)
             print("Broadcasting address...")
             time.sleep(5)  # 每隔5秒广播一次
     except KeyboardInterrupt:

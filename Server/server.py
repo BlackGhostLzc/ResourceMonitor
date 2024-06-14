@@ -7,13 +7,22 @@ import json
 import cmd
 import util
 
+def get_host_address():
+    # 获取本机主机名
+    host = socket.gethostname()
+    # 获取本机IP地址
+    ip_address = socket.gethostbyname(host)
+    return ip_address
+
 # 服务器地址和端口
-HOST = '192.168.56.1'
+HOST = get_host_address()
 PORT = 65432
 
 agentNodesLock = threading.Lock()
 
 AgentNodes = []
+
+
 
 def handleAgent(conn, cmd, name, addr):
     # 首先需要把监控的主机记录下来
@@ -245,15 +254,17 @@ def listen_for_broadcast():
     print("Server listening for broadcasts on port 12345")
 
     while True:
-        data, addr = udp_sock.recvfrom(1024)
-        if data.decode() == "agent_address":
-            print(f"Received broadcast from {addr}")
-            start_tcp_connection_agent(addr[0])
+        message, addr = udp_sock.recvfrom(1024)
+        data = json.loads(message.decode('utf-8'))
 
-def start_tcp_connection_agent(agent_host):
+        if data["node"] == "agent":
+            print(f"Received broadcast from {addr}")
+            start_tcp_connection_agent(data["cmd"], data["name"], addr[0])
+
+def start_tcp_connection_agent(cmd, name, host):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
-        agent_port = 54321  # 客户端监听的端口
-        tcp_sock.connect((agent_host, agent_port))
+        port = 54321  # 客户端监听的端口
+        tcp_sock.connect((host, port))
 
         response = tcp_sock.recv(1024).decode()
         if response != "ok":
@@ -261,7 +272,7 @@ def start_tcp_connection_agent(agent_host):
             exit(1)
         # 成功接受后
         print("connect to agent success")
-        handleAgent(tcp_sock, cmd="cmd", name="name", addr=(agent_host, agent_port))
+        handleAgent(tcp_sock, cmd=cmd, name=name, addr=(host, port))
 
 
 
