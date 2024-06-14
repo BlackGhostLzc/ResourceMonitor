@@ -7,6 +7,9 @@ import json
 import cmd
 import util
 
+# 服务器地址和端口
+HOST = '127.0.0.1'
+PORT = 65432
 
 agentNodesLock = threading.Lock()
 

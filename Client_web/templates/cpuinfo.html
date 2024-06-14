@@ -1,76 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
         th, td {
-            padding: 15px;
+            border: 1px solid #ddd;
+            padding: 12px;
             text-align: left;
         }
         th {
             background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        #myChart {
+            width: 700px;  /* Specific width for the canvas */
+            height: auto;  /* Auto height to maintain aspect ratio */
+            margin: 0 auto; /* Center the canvas */
+            display: block; /* Make the canvas a block element */
         }
     </style>
 </head>
+
+
 <body>
-    <h1>CPU 信息</h1>
-    <table>
-        <tr>
-            <th>属性</th>
-            <th>值</th>
-        </tr>
-        <tr>
-            <td>CPU 核心数</td>
-            <td>{{ data.cpu_count }}</td>
-        </tr>
-        <tr>
-            <td>CPU 使用率 (%)</td>
-            <td>
-                <ul>
-                {% for percent in data.cpu_percent %}
-                    <li>{{ percent }}</li>
-                {% endfor %}
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>CPU 时间 (s)</td>
-            <td>
-                <ul>
-                {% for time in data.cpu_times %}
-                    <li>{{ time }}</li>
-                {% endfor %}
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>CPU 频率 (MHz)</td>
-            <td>
-                <ul>
-                {% for freq in data.cpu_freq %}
-                    <li>{{ freq }}</li>
-                {% endfor %}
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>CPU 统计</td>
-            <td>
-                <ul>
-                {% for stat in data.cpu_stats %}
-                    <li>{{ stat }}</li>
-                {% endfor %}
-                </ul>
-            </td>
-        </tr>
-    </table>
-    <button onclick="location.href='/'" type="button">返回首页</button>
+    <div class="container">
+        <h1>CPU 信息</h1>
+        <table>
+            <tr>
+                <th>属性</th>
+                <th>值</th>
+            </tr>
+            <tr>
+                <td>CPU 核心数</td>
+                <td>{{ data.cpu_count }}</td>
+            </tr>
+            <tr>
+                <td>CPU 时间 (s)</td>
+                <td>
+                    <ul>
+                    {% for time in data.cpu_times %}
+                        <li>{{ time }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>CPU 频率 (MHz)</td>
+                <td>
+                    <ul>
+                    {% for freq in data.cpu_freq %}
+                        <li>{{ freq }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>CPU 统计</td>
+                <td>
+                    <ul>
+                    {% for stat in data.cpu_stats %}
+                        <li>{{ stat }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+
+
+        <canvas id="myChart" width="250" height="100"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+        // 获取 Canvas 元素
+        var cpu_percent = {{data.cpu_percent | tojson}}; // 将服务器端的CPU使用率数据渲染为JavaScript数组
+        var labels = cpu_percent.map((_, i) => `CPU${i}`);
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        // 创建柱状图
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'CPU 使用率',
+                    data: cpu_percent,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // 设置背景颜色
+                    borderColor: 'rgba(54, 162, 235, 1)', // 设置边框颜色
+                    borderWidth: 1,
+                    barThickness: 15,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                                    callback: function (value) { return value + "%" }
+                                },
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 20, // 上边距
+                        bottom: 20, // 下边距
+                        left: 20, // 左边距
+                        right: 20 // 右边距
+                    }
+                },
+                plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: 'black' // 字体颜色
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y.toFixed(1) + '%'; // Set precision to 2 decimal places for tooltips
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+            }
+        });
+        </script>
+
+        <button onclick="location.href='/'" type="button">返回首页</button>
+    </div>
 </body>
 </html>
