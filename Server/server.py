@@ -8,7 +8,7 @@ import cmd
 import util
 
 # 服务器地址和端口
-HOST = '127.0.0.1'
+HOST = '192.168.56.1'
 PORT = 65432
 
 agentNodesLock = threading.Lock()
@@ -248,12 +248,12 @@ def listen_for_broadcast():
         data, addr = udp_sock.recvfrom(1024)
         if data.decode() == "agent_address":
             print(f"Received broadcast from {addr}")
-            start_tcp_connection(addr[0])
+            start_tcp_connection_agent(addr[0])
 
-def start_tcp_connection(client_host):
+def start_tcp_connection_agent(agent_host):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
-        client_port = 54321  # 客户端监听的端口
-        tcp_sock.connect((client_host, client_port))
+        agent_port = 54321  # 客户端监听的端口
+        tcp_sock.connect((agent_host, agent_port))
 
         response = tcp_sock.recv(1024).decode()
         if response != "ok":
@@ -261,18 +261,41 @@ def start_tcp_connection(client_host):
             exit(1)
         # 成功接受后
         print("connect to agent success")
-        handleAgent(tcp_sock, cmd="cmd", name="name", addr=(client_host, client_port))
+        handleAgent(tcp_sock, cmd="cmd", name="name", addr=(agent_host, agent_port))
 
 
 
 
+def start_tcp_connection_client():
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        # 将套接字绑定到指定的地址和端口
+        s.bind((HOST, PORT))
+        # 开始监听连接
+        s.listen()
+
+        print("Server is listening...")
+
+        # 开启一个线程，向所有 agent 发送心跳
+        # heartbeatThread = threading.Thread(target=broadcastHeartBeat)
+        # heartbeatThread.start()
+
+        while True:
+            # 接受客户端连接
+            conn, addr = s.accept()
+
+            # 开启一个新的线程处理这个连接
+            thread = threading.Thread(target=handleConn, args=(conn,addr))
+            thread.start()
+
+client_thread = threading.Thread(target=start_tcp_connection_client)
+broadcast_thread = threading.Thread(target=listen_for_broadcast)
+
+# 启动线程
+client_thread.start()
+broadcast_thread.start()
 
 
-
-        # 开启一个新的线程处理这个连接
-        #thread = threading.Thread(target=handleConn, args=(tcp_sock, (client_host, client_port)))
-        #thread.start()
-
-
-
-listen_for_broadcast()
+# 等待线程完成
+broadcast_thread.join()
+client_thread.join()

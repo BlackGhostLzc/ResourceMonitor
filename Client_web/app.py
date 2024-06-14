@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-HOST = '127.0.0.1'  # 服务器IP地址
+HOST = '192.168.56.1'  # 服务器IP地址
 PORT = 65432  # 服务器端口
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
