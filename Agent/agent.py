@@ -5,7 +5,7 @@ import json
 import resource
 
 # 服务器地址和端口
-HOST = '10.195.50.135'
+HOST = '127.0.0.1'
 PORT = 65432
 
 # 创建一个套接字对象
