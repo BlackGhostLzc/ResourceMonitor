@@ -1,96 +1,111 @@
 import socket
-import psutil
+import time
+import threading
 import json
 
 import resource
 
-# 服务器地址和端口
-HOST = '127.0.0.1'
-PORT = 65432
+connect_state = 0
 
-# 创建一个套接字对象
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # 主动连接到服务器
-    s.connect((HOST, PORT))
-
-    # 连接服务器
-    userinfo = psutil.users()
-    hostname = userinfo[0][0]
+def broadcast_address():
+    udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     data = {
         "node": "agent",
         "cmd": "monitored",
-        "name": hostname,
+        "name": socket.gethostname(),
     }
 
     message = json.dumps(data).encode('utf-8')
-    s.sendall(message)
 
-    response = s.recv(1024).decode()
-    if response != "ok":
-        print("Connect to server failed")
-        exit(1)
+    broadcast_address = ('<broadcast>', 12345)  # 12345 是广播端口
 
-    # 成功接受后
-    print("connect to server success")
+    global connect_state
+    try:
+        while connect_state == 0 :
+            udp_sock.sendto(message, broadcast_address)
+            print("Broadcasting address...")
+            time.sleep(5)  # 每隔5秒广播一次
+    except KeyboardInterrupt:
+        print("Stopping broadcast")
+    finally:
+        udp_sock.close()
 
-    # 不断相应服务器获取硬件资源的请求
-    while True:
-        # 接受服务器发送的资源请求或者是心跳
-        recvdata = s.recv(1024)
-        print(recvdata)
-        command = json.loads(recvdata.decode('utf-8'))
+def start_tcp_agent():
+    host = '0.0.0.0'
+    port = 54321  # 客户端监听的端口
 
-        # 如果是心跳
-        if command["cmd"] == "heartbeat":
-            # print("收到 1 个心跳")
-            pass
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((host, port))
+        s.listen()
+        print(f"Client TCP server listening on {host}:{port}")
 
-        if command["cmd"] == "cpuinfo":
-            # 获取相关的资源并发送
-            data = resource.requireCpuInfo()
-            print(data)
-            message = json.dumps(data).encode('utf-8')
-            s.sendall(message)
+        while True:
+            conn, addr = s.accept()
 
-        elif command["cmd"] == "meminfo":
-            # 获取相关的资源并发送
-            data = resource.requireMemInfo()
-            print(data)
-            message = json.dumps(data).encode('utf-8')
-            s.sendall(message)
+            with conn:
+                # 发送连接成功相应
+                response = "ok"
+                conn.sendall(response.encode())
+                global connect_state
+                connect_state = 1
 
-        elif command["cmd"] == "diskinfo":
-            data = resource.requireDiskInfo()
-            print(data)
-            message = json.dumps(data).encode('utf-8')
-            s.sendall(message)
+                print(f"Connected by {addr}")
+                while True:
+                    recvdata = conn.recv(1024)
+                    print(recvdata)
+                    command = json.loads(recvdata.decode('utf-8'))
 
-        elif command["cmd"] == "sensorinfo":
-            data = resource.requireSensorInfo()
-            print(data)
-            message = json.dumps(data).encode('utf-8')
-            s.sendall(message)
+                    # 如果是心跳
+                    if command["cmd"] == "heartbeat":
+                        # print("收到 1 个心跳")
+                        pass
 
-        elif command["cmd"] == "procinfo":
-            data = resource.requireProcInfo()
-            print(data)
-            message = json.dumps(data).encode('utf-8')
-            s.sendall(message)
+                    if command["cmd"] == "cpuinfo":
+                        # 获取相关的资源并发送
+                        data = resource.requireCpuInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        conn.sendall(message)
 
-        # 可能是需要硬件资源信息
+                    elif command["cmd"] == "meminfo":
+                        # 获取相关的资源并发送
+                        data = resource.requireMemInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        conn.sendall(message)
 
-        # 如果是资源的请求
+                    elif command["cmd"] == "diskinfo":
+                        data = resource.requireDiskInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        conn.sendall(message)
 
+                    elif command["cmd"] == "sensorinfo":
+                        data = resource.requireSensorInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        conn.sendall(message)
 
+                    elif command["cmd"] == "procinfo":
+                        data = resource.requireProcInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        conn.sendall(message)
 
+                    # 可能是需要硬件资源信息
 
+                    # 如果是资源的请求
 
+# 创建两个线程分别执行 broadcast_address 和 start_tcp_agent
+broadcast_thread = threading.Thread(target=broadcast_address)
+tcp_agent_thread = threading.Thread(target=start_tcp_agent)
 
+# 启动线程
+broadcast_thread.start()
+tcp_agent_thread.start()
 
-
-
-
-
-
-
+# 等待线程完成
+broadcast_thread.join()
+tcp_agent_thread.join()

@@ -3,8 +3,15 @@ import psutil
 import cmd
 import json
 
+def get_host_address():
+    # 获取本机主机名
+    host = socket.gethostname()
+    # 获取本机IP地址
+    ip_address = socket.gethostbyname(host)
+    return ip_address
+
 # 服务器地址和端口
-HOST = '10.195.50.135'
+HOST = get_host_address()
 PORT = 65432
 
 commandList = ["ls", "cpuinfo", "meminfo", "diskinfo", "netinfo", "sensorinfo", "procinfo", "quit"]
