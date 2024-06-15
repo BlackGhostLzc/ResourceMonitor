@@ -188,7 +188,7 @@
             });
 
             socket.on('updateCpuData', (data) => {
-                console.log('Received CPU data:', data);
+                console.log('Received CPU data.');
                 // Update your chart or DOM here with the received data
                 barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
                 barChart.data.datasets[0].data = data.cpu_percent;

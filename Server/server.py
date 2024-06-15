@@ -280,6 +280,7 @@ def start_tcp_connection_agent(cmd, name, host):
 def start_tcp_connection_client():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        print(HOST,PORT)
         # 将套接字绑定到指定的地址和端口
         s.bind((HOST, PORT))
         # 开始监听连接
