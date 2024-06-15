@@ -1,27 +1,199 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LS Page</title>
+    <meta charset="UTF-8" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Hosts</title>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #e0e0e0); /* Add gradient background color */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            min-height: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat; /* Add background pattern */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 15px;
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #myChart {
+            width: 800px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        table {
+            font-size: 18px;
+        }
+
+        .style-table {
+            border-collapse: collapse;
+            margin: 50px auto;
+            font-size: 1.2em;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .style-table thead {
+            background-color: #0398dd;
+            color: #ffffff;
+        }
+
+        .style-table tbody tr:first-of-type {
+            background-color: #0398dd;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .style-table th,
+        .style-table td {
+            padding: 12px 15px;
+        }
+
+        .style-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .style-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .style-table tbody tr:last-of-type {
+            border-bottom: 2px solid #0398dd;
+        }
+
+        .custom-button {
+            background-color: #0398dd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+        }
+
+        .custom-button:hover {
+            background-color: white;
+            color: #0398dd;
+            border: 2px solid #0398dd;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header button {
+            margin: 0 20px 0 0;
+        }
+
+        .hbar {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+        .center-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+        }
+
+        ul.modern-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0;
+            margin-bottom: 10px;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <h2>Hosts:</h2>
-    <table>
+ <div class="container">
+     <div class="header">
+         <button class="button" onclick="location.href='/ls'" type="button">
+             <i class="fas fa-arrow-left"></i>
+         </button>
+         <h1>All the hosts</h1>
+     </div>
+    <table class="style-table">
         <tr>
             <th>Host Name</th>
             <th>IP Address</th>
@@ -36,15 +208,13 @@
             <td>{{ host[0] }}</td>
             <td>{{ host[1][0] }}</td>
             <td>{{ host[1][1] }}</td>
-            <td><button type="CPU Info" onclick="cpuInfo('{{ host[0] }}')">CPU Info</button></td>
-            <td><button type="Mem Info" onclick="memInfo('{{ host[0] }}')">Mem Info</button></td>
-            <td><button type="Disk Info" onclick="diskInfo('{{ host[0] }}')">Disk Info</button></td>
-            <td><button type="Proc Info" onclick="procInfo('{{ host[0] }}')">Proc Info</button></td>
+            <td><button class="custom-button" type="CPU Info" onclick="cpuInfo('{{ host[0] }}')">CPU Info</button></td>
+            <td><button class="custom-button" type="Mem Info" onclick="memInfo('{{ host[0] }}')">Mem Info</button></td>
+            <td><button class="custom-button" type="Disk Info" onclick="diskInfo('{{ host[0] }}')">Disk Info</button></td>
+            <td><button class="custom-button" type="Proc Info" onclick="procInfo('{{ host[0] }}')">Proc Info</button></td>
         </tr>
     {% endfor %}
     </table>
-
-    <button onclick="location.href='/'" type="button">返回首页</button>
 
     <script>
         function cpuInfo(host) {
@@ -60,8 +230,11 @@
             window.location.href = '/procinfo/' + host;
         }
     </script>
-
+ </div>
 </body>
 </html>
+
+
+
 
 

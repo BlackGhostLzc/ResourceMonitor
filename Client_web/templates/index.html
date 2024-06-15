@@ -1,208 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh">
 <head>
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="themepresss">
+    <meta charset="UTF-8" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Hosts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #e0e0e0);
+            margin: 0;
+            padding: 20px;
+        }
 
-    <!-- Page Title -->
-    <title>Home Page</title>
+        .container {
+            max-width: 1000px;
+            min-height: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* 改为 flex-start 以使内容靠上 */
+            text-align: center;
+            padding-top: 40px; /* 添加顶部填充以进一步向上移动内容 */
+        }
 
-    <!-- Icon fonts -->
-    <link href="../static/css/themify-icons.css" rel="stylesheet">
-    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
-    <link href="../static/css/flaticon.css" rel="stylesheet">
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
 
-    <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
 
-    <!-- Plugins for this template -->
-    <link href="../static/css/animate.css" rel="stylesheet">
-    <link href="../static/css/owl.carousel.css" rel="stylesheet">
-    <link href="../static/css/owl.theme.css" rel="stylesheet">
-    <link href="../static/css/odometer-theme-default.css" rel="stylesheet">
-    <link href="../static/css/slick.css" rel="stylesheet">
-    <link href="../static/css/slick-theme.css" rel="stylesheet">
-    <link href="../static/css/owl.transitions.css" rel="stylesheet">
-    <link href="../static/css/jquery.fancybox.css" rel="stylesheet">
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    <!-- Custom styles for this template -->
-    <link href="../static/css/style.css" rel="stylesheet">
-    <link href="../static/css/responsive.css" rel="stylesheet">
+        tr:hover {
+            background-color: #f1f1f1;
+        }
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
 
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 25px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header button {
+            margin: 0 20px 0 0;
+        }
+
+        .hbar {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+
+        .center-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+        }
+
+        ul.modern-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .description {
+            margin: 20px 0;
+            font-size: 24px;
+            color: #555;
+        }
+
+        h1 {
+            font-size: 48px; /* 加大字体 */
+            margin-bottom: 10px;
+        }
+
+        .background-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
-
 <body>
-
-    <!-- start page-wrapper -->
-    <div class="page-wrapper">
-        <!-- end preloader -->
-
-        <!-- Start header -->
-        <header id="header" class="site-header header-style-1 header-style-3">
-            <div class="topbar">
-                <div class="container">
-
-                    <div class="row">
-                        <div class="col col-sm-4">
-                            <div class="social-links clearfix">
-                                <ul>
-                                    <li><a href="#"><i class="ti-facebook"></i></a></li>
-                                    <li><a href="#"><i class="ti-twitter-alt"></i></a></li>
-                                    <li><a href="#"><i class="ti-linkedin"></i></a></li>
-                                    <li><a href="#"><i class="ti-pinterest"></i></a></li>
-                                    <li><a href="#"><i class="ti-vimeo-alt"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- end container -->
-            </div>
-            <!-- end topbar -->
-            <button onclick="location.href='/ls'" type="button">展示所有的主机信息</button>
-
-            <nav class="navigation navbar navbar-default">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="open-btn">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse navbar-right navigation-holder">
-                        <button class="close-navbar"><i class="ti-close"></i></button>
-                    </div><!-- end of nav-collapse -->
-                </div><!-- end of container -->
-            </nav>
-        </header>
-        <!-- end of header -->
-
-
-        <!-- start of hero -->
-        <section class="hero hero-slider-wrapper hero-style-1 hero-style-2">
-            <div class="hero-slider">
-                <div class="slide">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col col-lg-6 col-sm-8 slide-caption">
-                                <div class="slide-title">
-                                    <h2>Resource Monitor</h2>
-                                </div>
-                                <div class="slide-subtitle">
-                                    <div class="slide-subtitle">
-                                        <p>Provide you with hardware resource monitoring services, including CPU,
-                                            Memory,Disk,Network,Process...</p>
-                                    </div>
-                                </div>
-                                <div class="slider-pic">
-                                    <img src="../static/images/slider/img-1.png" alt>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- end about-section -->
-        <!-- service-area start -->
-        <div class="service-area bg-animate-shape ptb-100-70">
-            <div class="ab-color_svg ab-svg_color">
-                <svg x="0px" y="0px" viewBox="0 0 1920 289" enable-background="new 0 0 1920 289" xml:space="preserve">
-                    <path fill="#fff" d="M959,169C582.541,169,240.253,104.804-14.125,0H0v289h1920V0h12.125C1677.747,104.804,1335.459,169,959,169
-                    z" />
-                </svg>
-            </div>
-            <div class="container">
-                <div class="col-12">
-                    <div class="section-title text-center">
-                        <h2>Our Best Services</h2>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="service-section">
-                            <div class="services-wrapper">
-                                <div class="services-icon-wrapper">
-                                    <i class="fi flaticon-chart"></i>
-                                </div>
-                                <div class="service-content">
-                                    <h2>Web Analytics</h2>
-                                    <p> It is a long established fact that a reader will be distracted by the readable
-                                        content</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Start project area-->
-        <!-- start quote-section -->
-
-        <div class="ab-color_svg ab-svg_color">
-            <svg x="0px" y="0px" viewBox="0 0 1920 289" enable-background="new 0 0 1920 289" xml:space="preserve">
-                <path fill="#f8f8f8" d="M959,169C582.541,169,240.253,104.804-14.125,0H0v289h1920V0h12.125C1677.747,104.804,1335.459,169,959,169
-                    z" />
-            </svg>
-        </div>
-        </section>
-        <!-- end quote-section -->
-
-        <!-- counter-area start -->
-        <div class="counter-area">
-            <div class="ab-color_svg ab-svg_color-m">
-                <svg x="0px" y="0px" viewBox="0 0 1920 289" enable-background="new 0 0 1920 289" xml:space="preserve">
-                    <path fill="#fff" d="M959,169C582.541,169,240.253,104.804-14.125,0H0v289h1920V0h12.125C1677.747,104.804,1335.459,169,959,169
-                    z" />
-                </svg>
-            </div>
-
-        </div>
-        <!-- counter-area end -->
-        <!-- start Project-section -->
-        <section class="project-section bg-animate-shape">
-            <div class="ab-color_svg ab-svg_color-m">
-                <svg x="0px" y="0px" viewBox="0 0 1920 289" enable-background="new 0 0 1920 289" xml:space="preserve">
-                    <path fill="#f8f8f8" d="M959,169C582.541,169,240.253,104.804-14.125,0H0v289h1920V0h12.125C1677.747,104.804,1335.459,169,959,169
-                    z" />
-                </svg>
-            </div>
-
-        </section>
-        <!-- end Project-section -->
-        <!-- testimonial-area start -->
-
-
-        <!-- end blog-section -->
-        <!-- start site-footer -->
-
-        <!-- end site-footer -->
-
+<div class="container">
+    <h1>Resource Monitor</h1>
+    <div class="description">
+        <p>监控Hosts的资源使用情况。</p>
+        <p>获取实时数据，比如CPU、内存、磁盘、网络、进程信息。</p>
+        <p>点击下方按钮，展示所有的主机信息。</p>
     </div>
-    <!-- end of page-wrapper -->
-
-    <!-- All JavaScript files
-    ================================================== -->
-    <script src="static/js/jquery.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-
-    <!-- Plugins for this template -->
-    <script src="static/js/jquery-plugin-collection.js"></script>
-
-    <!-- Custom script for this template -->
-    <script src="static/js/script.js"></script>
+    <button class="button" onclick="location.href='/ls'" type="button">展示所有的主机信息</button>
+    <img class="background-image" src="./static/images/about-pic2.png" alt="背景图片">
+</div>
 </body>
-
 </html>
 

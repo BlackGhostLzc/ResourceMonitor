@@ -7,22 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
 
-
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
+            background: linear-gradient(to bottom, #e0f7fa, #e0e0e0); /* Add gradient background color */
             margin: 0;
             padding: 20px;
         }
+
         .container {
-            max-width: 900px;
+            max-width: 1000px;
+            min-height: 1000px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat; /* Add background pattern */
         }
         .header {
             display: flex;
@@ -47,12 +49,14 @@
             justify-content: flex-start; /* Aligns children to the top */
             align-items: center; /* Centers horizontally */
             padding: 10px; /* Just for spacing */
+            font-size: 20px;
         }
 
         ul.modern-list {
             list-style: none; /* Remove default bullet points */
             padding: 0;
             margin: 0;
+            font-size: 20px;
         }
         ul.modern-list li {
             position: relative;
@@ -102,25 +106,27 @@
             <h1>CPU 信息</h1>
         </div>
 
-        <canvas id="myChart" width="250" height="100"></canvas>
+        <canvas id="myChart" width="280" height="180"></canvas>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
         <script>
         // 获取 Canvas 元素
         const ctx = document.getElementById('myChart').getContext('2d');
+
+        const cpu_percent = {{data.cpu_percent | tojson}}; // 将服务器端的CPU使用率数据渲染为JavaScript数组
+        const labels = cpu_percent.map((_, i) => `CPU ${i}`);
 
         // 创建柱状图
         const barChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: [],
+                labels: labels,
                 datasets: [{
                     label: 'CPU 使用率',
-                    data: [],
+                    data: cpu_percent,
                     backgroundColor: 'rgba(54, 162, 235, 0.2)', // 设置背景颜色
                     borderColor: 'rgba(54, 162, 235, 1)', // 设置边框颜色
                     borderWidth: 1,
-                    barThickness: 15,
+                    barThickness: 30,
                 }]
             },
             options: {
@@ -173,71 +179,36 @@
                 }
             }
         });
-
-
-
-        console.log("Finished chart initialization.")
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const hostName = '{{ host_name }}';
-            const socket = io.connect(`${location.protocol}//${document.domain}:${location.port}`, {
-                query: { host_name: hostName }
-            });
-
-            socket.on('connect', () => {
-                console.log('Connected to Socket.IO server');
-            });
-
-            socket.on('updateCpuData', (data) => {
-                console.log('Received CPU data:', data);
-                // Update your chart or DOM here with the received data
-                barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
-                barChart.data.datasets[0].data = data.cpu_percent;
-                barChart.update();
-
-                document.querySelector('.cpu-count').innerText = data.cpu_count;
-                updateList('.cpu-times', data.cpu_times);
-                updateList('.cpu-freq', data.cpu_freq);
-                updateList('.cpu-stats', data.cpu_stats);
-            });
-
-            socket.on('disconnect', () => {
-                console.log('Disconnected from Socket.IO server');
-            });
-        });
-
-        function updateList(selector, data) {
-            const list = document.querySelector(selector);
-            list.innerHTML = '';
-            for (const [key, value] of Object.entries(data)) {
-                const li = document.createElement('li');
-                li.innerText = `${key}: ${value}`;
-                list.appendChild(li);
-            }
-        }
         </script>
 
 
         <div class="hbar">
             <div class="center-div">
                 <h4>CPU 核心数</h4>
-                <div class="cpu-count"></div>
+                {{ data.cpu_count }}
             </div>
             <div class="center-div">
                 <h4>CPU 时间 (s)</h4>
-                <ul class="modern-list cpu-times">
-
+                <ul class="modern-list">
+                    {% for label, time in data.cpu_times.items() %}
+                        <li>{{ label | format_label }}: {{ time }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="center-div">
                 <h4>CPU 频率 (MHz)</h4>
-                <ul class="modern-list cpu-freq">
-
+                <ul class="modern-list">
+                    {% for label, freq in data.cpu_freq.items() %}
+                        <li>{{ label | format_label }}: {{ freq }}</li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="center-div">
                 <h4>CPU 统计</h4>
-                    <ul class="modern-list cpu-stats">
-
+                    <ul class="modern-list">
+                    {% for label, stat in data.cpu_stats.items() %}
+                        <li>{{ label | format_label }}: {{ stat }}</li>
+                    {% endfor %}
                     </ul>
             </div>
         </div>

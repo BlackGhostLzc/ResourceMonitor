@@ -1,29 +1,209 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disk Information</title>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #e0e0e0); /* Add gradient background color */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            min-height: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat; /* Add background pattern */
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 15px;
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
         }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #myChart {
+            width: 800px;
+            /* Specific width for the canvas */
+            height: auto;
+            /* Auto height to maintain aspect ratio */
+            margin: 0 auto;
+            /* Center the canvas */
+            display: block;
+            /* Make the canvas a block element */
+        }
+
+        table {
+            font-size: 18px; /* 设置字体大小为 16px */
+        }
+
+        .style-table {
+            border-collapse: collapse;
+            margin: 50px auto;
+            font-size: 1.2em;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .style-table thead {
+            background-color: #0398dd;
+            color: #ffffff;
+        }
+
+        .style-table tbody tr:first-of-type {
+            background-color: #0398dd;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .style-table th,
+        .style-table td {
+            padding: 12px 15px;
+        }
+
+        .style-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .style-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .style-table tbody tr:last-of-type {
+            border-bottom: 2px solid #0398dd;
+        }
+
+
+    .custom-button {
+        background-color: #0398dd; /* 按钮背景颜色 */
+        color: white; /* 按钮文字颜色 */
+        border: none; /* 移除默认边框 */
+        padding: 10px 20px; /* 内边距 */
+        text-align: center; /* 文本居中 */
+        text-decoration: none; /* 移除文本装饰 */
+        display: inline-block; /* 行内块元素 */
+        font-size: 16px; /* 字体大小 */
+        margin: 4px 2px; /* 外边距 */
+        cursor: pointer; /* 鼠标指针样式 */
+        border-radius: 12px; /* 圆角边框 */
+        transition-duration: 0.4s; /* 过渡效果 */
+    }
+
+    .custom-button:hover {
+        background-color: white; /* 鼠标悬停时背景颜色 */
+        color: #0398dd; /* 鼠标悬停时文字颜色 */
+        border: 2px solid #0398dd; /* 鼠标悬停时边框 */
+    }
+
+    .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header button {
+            /* Add some space between the heading and the button */
+            margin: 0 20px 0 0;
+        }
+
+        .hbar {
+            display: flex;
+            justify-content: space-between; /* Align items to the left */
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+        .center-div{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Aligns children to the top */
+            align-items: center; /* Centers horizontally */
+            padding: 10px; /* Just for spacing */
+        }
+
+        ul.modern-list {
+            list-style: none; /* Remove default bullet points */
+            padding: 0;
+            margin: 0;
+        }
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0; /* Adjust spacing for custom bullet */
+            margin-bottom: 10px; /* Spacing between list items */
+            color: #333; /* Text color */
+        }
+
+
     </style>
 </head>
-<body>
-    <h1>Disk 信息</h1>
 
-    <h2>Disk Partitions</h2>
-    <table>
+<body>
+     <div class="container">
+         <div class="header">
+             <button class="button" onclick="location.href='/ls'" type="button">
+                 <i class="fas fa-arrow-left"></i>
+             </button>
+             <h1>Disk 信息</h1>
+         </div>
+      <h2>Disk Partitions</h2>
+    <table class="style-table">
         <tr>
             <th>设备名称</th>
             <th>挂载点</th>
@@ -44,32 +224,8 @@
         {% endfor %}
     </table>
 
-    <h2>Disk Usage</h2>
-    <table>
-        <tr>
-            <th>属性</th>
-            <th>值</th>
-        </tr>
-        <tr>
-            <td>Total</td>
-            <td>{{ disk_info.disk_usage[0] }} bytes</td>
-        </tr>
-        <tr>
-            <td>Used</td>
-            <td>{{ disk_info.disk_usage[1] }} bytes</td>
-        </tr>
-        <tr>
-            <td>Free</td>
-            <td>{{ disk_info.disk_usage[2] }} bytes</td>
-        </tr>
-        <tr>
-            <td>Percent</td>
-            <td>{{ disk_info.disk_usage[3] }} %</td>
-        </tr>
-    </table>
-
     <h2>Disk IO Counters</h2>
-    <table>
+    <table class="style-table">
         <tr>
             <th>属性</th>
             <th>值</th>
@@ -99,6 +255,98 @@
             <td>{{ disk_info.disk_io_counters[5] }} ms</td>
         </tr>
     </table>
+
+
+     <div id="disk-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
+    <script language="JavaScript">
+        $(document).ready(function () {
+            // 将 Python 变量嵌入到 JavaScript 中
+            var diskInfo = {{ disk_info | tojson }};
+
+            // Swap Memory Data
+            var TotalBytes = diskInfo.disk_usage[0];
+            var UsedBytes = diskInfo.disk_usage[1];
+            var FreeBytes = diskInfo.disk_usage[2];
+
+            // 转换字节到GB
+            var bytesToGB = function (bytes) {
+                return (bytes / (1024 * 1024 * 1024)).toFixed(1);
+            };
+
+            // Function to create pie chart
+            var createPieChart = function (container, titleText, totalBytes, usedBytes, freeBytes) {
+                var totalGB = bytesToGB(totalBytes);
+                var usedGB = bytesToGB(usedBytes);
+                var freeGB = bytesToGB(freeBytes);
+
+                var chart = {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    events: {
+                        render: function () {
+                            var chart = this;
+                            if (!chart.customText) {
+                                chart.customText = chart.renderer.text(
+                                    'Disk Total Size: ' + totalGB + ' GB',
+                                    5, 50  // Adjust Y coordinate to move it down
+                                ).css({
+                                    color: '#FF5733',  // Change text color
+                                    fontSize: '20px'
+                                }).add();
+                            }
+                        }
+                    }
+                };
+                var title = {
+                    text: titleText,
+                    style: {
+                        fontSize: '30px'
+                    }
+                };
+                var tooltip = {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                };
+                var plotOptions = {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y:.1f} GB ({point.percentage:.1f}%)',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                                fontSize: '16px'  // Increase font size
+                            }
+                        }
+                    }
+                };
+
+                var series = [{
+                    name: 'Memory',
+                    data: [
+                        { name: 'Used', y: parseFloat(usedGB) },
+                        { name: 'Free', y: parseFloat(freeGB) }
+                    ]
+                }];
+
+                var json = {};
+                json.chart = chart;
+                json.title = title;
+                json.tooltip = tooltip;
+                json.series = series;
+                json.plotOptions = plotOptions;
+
+                $(container).highcharts(json);
+            };
+
+            // Create the two pie charts
+            createPieChart('#disk-container', 'Disk', TotalBytes, UsedBytes, FreeBytes);
+        });
+    </script>
+
+     </div>
 
     <button onclick="location.href='/'" type="button">返回首页</button>
 </body>
