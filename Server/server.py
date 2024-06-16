@@ -35,7 +35,7 @@ def handleAgent(conn, cmd, name, addr):
     print("A new agent comes in")
 
     # 发送连接成功相应
-    while(True):
+    while True:
         # 发送 HeartBeat
         command = {
             "node": "server",
@@ -160,7 +160,6 @@ def handleClientProcInfo(conn, hostname):
     conn.sendall(json.dumps(procInfo).encode('utf-8'))
 
 
-
 def handleClientSensorInfo(conn, hostname):
     # 1.从 AgentNodes 中找到对应的连接和主机
     agentNodesLock.acquire()
@@ -194,13 +193,11 @@ def handleClient(conn):
     while True:
         # 不断读取用户的输入命令
         message = conn.recv(1024)
-
         # 用户的输入是什么？ 是 1 个 json 字符串
         command = json.loads(message.decode('utf-8'))
         print(command)
         # 判断 client 命令的类型
         # 这是一个 json 类型的格式
-
         if command["cmd"] == "ls":
             handleClientLs(conn)
         elif command["cmd"] == "cpuinfo":
@@ -240,9 +237,7 @@ def handleConn(conn, addr):
         # 如果是 agent 的连接命令则需要专门创建 1 个线程负责和 client 进行交互
         print(command)
 
-        if command["node"] == "agent":
-            handleAgent(conn, cmd=command["cmd"], name=command["name"], addr = addr)
-        elif command["node"] == "client":
+        if command["node"] == "client":
             handleClient(conn)
 
 
@@ -275,8 +270,6 @@ def start_tcp_connection_agent(cmd, name, host):
         handleAgent(tcp_sock, cmd=cmd, name=name, addr=(host, port))
 
 
-
-
 def start_tcp_connection_client():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -298,6 +291,7 @@ def start_tcp_connection_client():
             # 开启一个新的线程处理这个连接
             thread = threading.Thread(target=handleConn, args=(conn,addr))
             thread.start()
+
 
 client_thread = threading.Thread(target=start_tcp_connection_client)
 broadcast_thread = threading.Thread(target=listen_for_broadcast)

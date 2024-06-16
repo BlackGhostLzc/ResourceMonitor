@@ -67,6 +67,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         # words[0] 为命令，后面的就是参数
         handleCommand(command, s)
-
-
-

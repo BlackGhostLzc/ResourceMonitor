@@ -50,8 +50,8 @@ def start_tcp_agent():
                 conn.sendall(response.encode())
                 global connect_state
                 connect_state = 1
-
                 print(f"Connected by {addr}")
+                # 处理各种资源信息请求
                 while True:
                     recvdata = conn.recv(1024)
                     print(recvdata)
