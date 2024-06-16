@@ -1,10 +1,14 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, request
 import socket
 import json
 import pickle
-import os
+from flask_socketio import SocketIO
+import threading
+import time
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret_level_808'
+socketio = SocketIO(app, async_mode='threading')  # Use eventlet as async mode
 
 def get_host_address():
     # 获取本机主机名
@@ -13,16 +17,13 @@ def get_host_address():
     ip_address = socket.gethostbyname(host)
     return ip_address
 
-
 HOST = get_host_address()  # 服务器IP地址
 PORT = 65432  # 服务器端口
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 
 # 发送身份信息
-data = {
-    "node": "client",
-}
+data = {"node": "client",}
 message = json.dumps(data).encode('utf-8')
 s.sendall(message)
 
@@ -44,6 +45,71 @@ def get_ls():
         return {"error": str(e)}
 
 
+
+def real_time_cpu(cid, hostname):
+    print(cid, hostname)
+    while status[cid]:
+        # central_server_request = {
+        #     "node": "client",
+        #     "cmd": "cpuinfo",
+        #     "name": hostname,
+        # }
+        # request_message = json.dumps(central_server_request).encode('utf-8')
+        # s.sendall(request_message)
+        # recvdata = s.recv(2048)
+        # return_data = json.loads(recvdata.decode('utf-8'))
+        return_data = {
+            "cpu_count": 2,
+            "cpu_percent": [30, 20],
+            "cpu_times": '1',
+            "cpu_freq": "2",
+            "cpu_stats": "3",
+        }
+        socketio.emit('updateCPUInfo', return_data, room=cid)
+        print("Sent\n\n\n")
+        time.sleep(2)
+
+
+
+
+status = {}
+threads = {}
+
+@socketio.on('connect')
+def handle_connection():
+    hostname = request.args.get('hostname')
+    cid = request.sid
+    print(f'Client {cid} connected with request hostname {hostname}')
+    thread = threading.Thread(target=real_time_cpu, args=(cid, hostname))
+    threads[cid] = thread
+    status[cid] = True
+    thread.start()
+    print("Starting Real-time Updating")
+
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    cid = request.sid
+    print(f'Client {cid} disconnected')
+    status[cid] = False
+    threads[cid].join()
+    del status[cid]
+    del threads[cid]
+    print("Real-time-updating ends")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Custom filter to replace underscores with spaces and capitalize the first letter
 @app.template_filter('format_label')
 def format_label(value):
@@ -62,18 +128,7 @@ def ls():
 
 @app.route('/cpuinfo/<host>')
 def cpuinfo(host):
-    # 这里可以根据实际需要获取更多关于主机的信息
-    data = {
-        "node": "client",
-        "cmd": "cpuinfo",
-        "name": host,
-    }
-    message = json.dumps(data).encode('utf-8')
-    s.sendall(message)
-    recvdata = s.recv(2048)
-    data = json.loads(recvdata.decode('utf-8'))
-    print(data)
-    return render_template('cpuinfo.html', data=data)
+    return render_template('cpuinfo.html', host=host)
 
 
 @app.route('/meminfo/<host>')

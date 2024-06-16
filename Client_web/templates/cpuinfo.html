@@ -6,8 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
     <style>
         body {
@@ -173,47 +172,6 @@
                 }
             }
         });
-
-
-
-        console.log("Finished chart initialization.")
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const hostName = '{{ host_name }}';
-            const socket = io.connect(`${location.protocol}//${document.domain}:${location.port}`, {
-                query: { host_name: hostName }
-            });
-
-            socket.on('connect', () => {
-                console.log('Connected to Socket.IO server');
-            });
-
-            socket.on('updateCpuData', (data) => {
-                console.log('Received CPU data:', data);
-                // Update your chart or DOM here with the received data
-                barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
-                barChart.data.datasets[0].data = data.cpu_percent;
-                barChart.update();
-
-                document.querySelector('.cpu-count').innerText = data.cpu_count;
-                updateList('.cpu-times', data.cpu_times);
-                updateList('.cpu-freq', data.cpu_freq);
-                updateList('.cpu-stats', data.cpu_stats);
-            });
-
-            socket.on('disconnect', () => {
-                console.log('Disconnected from Socket.IO server');
-            });
-        });
-
-        function updateList(selector, data) {
-            const list = document.querySelector(selector);
-            list.innerHTML = '';
-            for (const [key, value] of Object.entries(data)) {
-                const li = document.createElement('li');
-                li.innerText = `${key}: ${value}`;
-                list.appendChild(li);
-            }
-        }
         </script>
 
 
@@ -241,6 +199,47 @@
                     </ul>
             </div>
         </div>
+
+        <script>
+            const hostName = '{{ host }}';
+            let socket = io.connect({
+                    query: { hostname: hostName }
+                    });
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+
+            socket.on('updateCPUInfo', function(data) {
+                console.log('Received CPU data');
+                // Update your chart or DOM here with the received data
+                barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
+                barChart.data.datasets[0].data = data.cpu_percent;
+                barChart.update();
+
+                document.querySelector('.cpu-count').innerText = data.cpu_count;
+                updateList('.cpu-times', data.cpu_times);
+                updateList('.cpu-freq', data.cpu_freq);
+                updateList('.cpu-stats', data.cpu_stats);
+            });
+
+
+        });
+
+        function updateList(selector, data) {
+            const list = document.querySelector(selector);
+            list.innerHTML = '';
+            for (const [key, value] of Object.entries(data)) {
+                const li = document.createElement('li');
+                li.innerText = `${key}: ${value}`;
+                list.appendChild(li);
+            }
+        }
+        </script>
+
     </div>
 </body>
 </html>
