@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="046a6446-7440-49fb-9ad1-24d2e738208c" name="更改" comment="update">
+    <list default="true" id="046a6446-7440-49fb-9ad1-24d2e738208c" name="更改" comment="Finish memory">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client_web/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client_web/templates/cpuinfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/cpuinfo.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client_web/templates/meminfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/meminfo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/diskinfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/diskinfo.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +131,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718356292076</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Finish memory">
+      <option name="closed" value="true" />
+      <created>1718567877761</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1718567877761</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,12 +160,13 @@
     <MESSAGE value="更改" />
     <MESSAGE value="broadcast" />
     <MESSAGE value="merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="Finish memory" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish memory" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ResourceMonitor$app.coverage" NAME="app Coverage Results" MODIFIED="1718460949002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
-    <SUITE FILE_PATH="coverage/ResourceMonitor$server.coverage" NAME="server Coverage Results" MODIFIED="1718565940076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
-    <SUITE FILE_PATH="coverage/ResourceMonitor$agent.coverage" NAME="agent Coverage Results" MODIFIED="1718565937852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Agent" />
+    <SUITE FILE_PATH="coverage/ResourceMonitor$server.coverage" NAME="server Coverage Results" MODIFIED="1718569838211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
+    <SUITE FILE_PATH="coverage/ResourceMonitor$agent.coverage" NAME="agent Coverage Results" MODIFIED="1718569834299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Agent" />
     <SUITE FILE_PATH="coverage/SE_Project$sensor.coverage" NAME="sensor 覆盖结果" MODIFIED="1716105715463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/ResourceMonitor$test_app.coverage" NAME="test_app Coverage Results" MODIFIED="1718467319680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
     <SUITE FILE_PATH="coverage/SE_Project$diskinfo.coverage" NAME="diskinfo 覆盖结果" MODIFIED="1716105209857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />

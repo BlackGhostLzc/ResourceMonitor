@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://code.highcharts.com/highcharts.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,152 +202,169 @@
              </button>
              <h1>Disk 信息</h1>
          </div>
-      <h2>Disk Partitions</h2>
-    <table class="style-table">
-        <tr>
-            <th>设备名称</th>
-            <th>挂载点</th>
-            <th>文件系统类型</th>
-            <th>挂载选项</th>
-            <th>最大文件数</th>
-            <th>最大路径长度</th>
-        </tr>
-        {% for partition in disk_info.disk_partions %}
-        <tr>
-            <td>{{ partition[0] }}</td>
-            <td>{{ partition[1] }}</td>
-            <td>{{ partition[2] }}</td>
-            <td>{{ partition[3] }}</td>
-            <td>{{ partition[4] }}</td>
-            <td>{{ partition[5] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
 
-    <h2>Disk IO Counters</h2>
-    <table class="style-table">
-        <tr>
-            <th>属性</th>
-            <th>值</th>
-        </tr>
-        <tr>
-            <td>Read Count</td>
-            <td>{{ disk_info.disk_io_counters[0] }}</td>
-        </tr>
-        <tr>
-            <td>Write Count</td>
-            <td>{{ disk_info.disk_io_counters[1] }}</td>
-        </tr>
-        <tr>
-            <td>Read Bytes</td>
-            <td>{{ disk_info.disk_io_counters[2] }} bytes</td>
-        </tr>
-        <tr>
-            <td>Write Bytes</td>
-            <td>{{ disk_info.disk_io_counters[3] }} bytes</td>
-        </tr>
-        <tr>
-            <td>Read Time</td>
-            <td>{{ disk_info.disk_io_counters[4] }} ms</td>
-        </tr>
-        <tr>
-            <td>Write Time</td>
-            <td>{{ disk_info.disk_io_counters[5] }} ms</td>
-        </tr>
-    </table>
+         <h2>Disk Partitions</h2>
+         <table class="style-table" id="partitions-table"></table>
+
+         <h2>Disk IO Counters</h2>
+         <table class="style-table" id="io-counter-table"></table>
+
+         <div id="disk-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
 
 
-     <div id="disk-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
-    <script language="JavaScript">
-        $(document).ready(function () {
-            // 将 Python 变量嵌入到 JavaScript 中
-            var diskInfo = {{ disk_info | tojson }};
+        <script>
+            $(document).ready(function () {
 
-            // Swap Memory Data
-            var TotalBytes = diskInfo.disk_usage[0];
-            var UsedBytes = diskInfo.disk_usage[1];
-            var FreeBytes = diskInfo.disk_usage[2];
+                // 转换字节到GB
+                var bytesToGB = function (bytes) {
+                    return (bytes / (1024 * 1024 * 1024)).toFixed(1);
+                };
 
-            // 转换字节到GB
-            var bytesToGB = function (bytes) {
-                return (bytes / (1024 * 1024 * 1024)).toFixed(1);
-            };
+                // Function to create pie chart
+                var createPieChart = function (container, titleText, totalBytes, usedBytes, freeBytes) {
+                    var totalGB = bytesToGB(totalBytes);
+                    var usedGB = bytesToGB(usedBytes);
+                    var freeGB = bytesToGB(freeBytes);
 
-            // Function to create pie chart
-            var createPieChart = function (container, titleText, totalBytes, usedBytes, freeBytes) {
-                var totalGB = bytesToGB(totalBytes);
-                var usedGB = bytesToGB(usedBytes);
-                var freeGB = bytesToGB(freeBytes);
-
-                var chart = {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie',
-                    events: {
-                        render: function () {
-                            var chart = this;
-                            if (!chart.customText) {
-                                chart.customText = chart.renderer.text(
-                                    'Disk Total Size: ' + totalGB + ' GB',
-                                    5, 50  // Adjust Y coordinate to move it down
-                                ).css({
-                                    color: '#FF5733',  // Change text color
-                                    fontSize: '20px'
-                                }).add();
+                    var chart = {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie',
+                        events: {
+                            render: function () {
+                                var chart = this;
+                                if (!chart.customText) {
+                                    chart.customText = chart.renderer.text(
+                                        'Disk Total Size: ' + totalGB + ' GB',
+                                        5, 50  // Adjust Y coordinate to move it down
+                                    ).css({
+                                        color: '#FF5733',  // Change text color
+                                        fontSize: '20px'
+                                    }).add();
+                                }
                             }
                         }
-                    }
-                };
-                var title = {
-                    text: titleText,
-                    style: {
-                        fontSize: '30px'
-                    }
-                };
-                var tooltip = {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                };
-                var plotOptions = {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.y:.1f} GB ({point.percentage:.1f}%)',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
-                                fontSize: '16px'  // Increase font size
+                    };
+                    var title = {
+                        text: titleText,
+                        style: {
+                            fontSize: '30px'
+                        }
+                    };
+                    var tooltip = {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    };
+                    var plotOptions = {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.y:.1f} GB ({point.percentage:.1f}%)',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                                    fontSize: '16px'  // Increase font size
+                                }
                             }
                         }
-                    }
+                    };
+
+                    var series = [{
+                        name: 'Memory',
+                        data: [
+                            { name: 'Used', y: parseFloat(usedGB) },
+                            { name: 'Free', y: parseFloat(freeGB) }
+                        ]
+                    }];
+
+                    var json = {};
+                    json.chart = chart;
+                    json.title = title;
+                    json.tooltip = tooltip;
+                    json.series = series;
+                    json.plotOptions = plotOptions;
+
+                    $(container).highcharts(json);
                 };
 
-                var series = [{
-                    name: 'Memory',
-                    data: [
-                        { name: 'Used', y: parseFloat(usedGB) },
-                        { name: 'Free', y: parseFloat(freeGB) }
-                    ]
-                }];
+                // Create the pie chart
+                createPieChart('#disk-container', 'Disk', 0, 0, 0);
 
-                var json = {};
-                json.chart = chart;
-                json.title = title;
-                json.tooltip = tooltip;
-                json.series = series;
-                json.plotOptions = plotOptions;
 
-                $(container).highcharts(json);
-            };
 
-            // Create the two pie charts
-            createPieChart('#disk-container', 'Disk', TotalBytes, UsedBytes, FreeBytes);
-        });
-    </script>
+                const hostName = '{{ host_name }}';
+                let socket = io({
+                    query: {
+                        host_name: hostName,
+                        request_command: 'diskinfo',
+                    }
+                });
+
+                socket.on('connect', function() {
+                    console.log('Connected to server');
+                });
+
+                socket.on('disconnect', function() {
+                    console.log('Disconnected from server');
+                });
+
+                socket.on('update', function(data) {
+                    // Update disk usage
+                    TotalBytes = data.disk_usage[0];
+                    UsedBytes = data.disk_usage[1];
+                    FreeBytes = data.disk_usage[2];
+
+                    // Update the pie chart
+                    var chart = $('#disk-container').highcharts();
+                    chart.series[0].setData([
+                        {name: 'Used', y: parseFloat(bytesToGB(UsedBytes))},
+                        {name: 'Free', y: parseFloat(bytesToGB(FreeBytes))}
+                    ]);
+                    chart.customText.attr({
+                        text: 'Disk Total Size: ' + bytesToGB(TotalBytes) + ' GB'
+                    });
+
+                    // Update partitions table
+                    var partitionsTable = $('#partitions-table');
+                    partitionsTable.empty(); // Clear existing rows
+                    partitionsTable.append('<tr> <th>设备名称</th> <th>挂载点</th> <th>文件系统类型</th> <th>挂载选项</th> <th>最大文件数</th> <th>最大路径长度</th> </tr>')
+                    data.disk_partions.forEach(function (partition) {
+                        partitionsTable.append(
+                                '<tr>' +
+                                '<td>' + partition[0] + '</td>' +
+                                '<td>' + partition[1] + '</td>' +
+                                '<td>' + partition[2] + '</td>' +
+                                '<td>' + partition[3] + '</td>' +
+                                '<td>' + partition[4] + '</td>' +
+                                '<td>' + partition[5] + '</td>' +
+                                '</tr>'
+                        );
+                    });
+
+                    // Update IO counters table
+                    var ioCountersTable = $('#io-counter-table');
+                    ioCountersTable.empty(); // Clear existing rows
+                    ioCountersTable.append(
+                            '<tr> <th>属性</th> <th>值</th> </tr>' +
+                            '<tr><td>Read Count</td><td>' + data.disk_io_counters[0] + '</td></tr>' +
+                            '<tr><td>Write Count</td><td>' + data.disk_io_counters[1] + '</td></tr>' +
+                            '<tr><td>Read Bytes</td><td>' + data.disk_io_counters[2] + ' bytes</td></tr>' +
+                            '<tr><td>Write Bytes</td><td>' + data.disk_io_counters[3] + ' bytes</td></tr>' +
+                            '<tr><td>Read Time</td><td>' + data.disk_io_counters[4] + ' ms</td></tr>' +
+                            '<tr><td>Write Time</td><td>' + data.disk_io_counters[5] + ' ms</td></tr>'
+                    );
+                });
+
+
+            });
+
+
+
+
+
+        </script>
 
      </div>
-
-    <button onclick="location.href='/'" type="button">返回首页</button>
 </body>
 </html>
