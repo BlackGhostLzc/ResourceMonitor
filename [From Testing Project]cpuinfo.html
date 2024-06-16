@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header button {
+            /* Add some space between the heading and the button */
+            margin: 0 20px 0 0;
+        }
+
+        .hbar {
+            display: flex;
+            justify-content: space-between; /* Align items to the left */
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+
+        .center-div{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Aligns children to the top */
+            align-items: center; /* Centers horizontally */
+            padding: 10px; /* Just for spacing */
+        }
+
+        ul.modern-list {
+            list-style: none; /* Remove default bullet points */
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0; /* Adjust spacing for custom bullet */
+            margin-bottom: 10px; /* Spacing between list items */
+            color: #333; /* Text color */
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #myChart {
+            width: 700px;  /* Specific width for the canvas */
+            height: auto;  /* Auto height to maintain aspect ratio */
+            margin: 0 auto; /* Center the canvas */
+            display: block; /* Make the canvas a block element */
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <button class="button" onclick="location.href='/ls'" type="button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>CPU 信息</h1>
+        </div>
+
+
+        <canvas id="myChart" width="250" height="100"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+        <script>
+        // 获取 Canvas 元素
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // 创建柱状图
+        const barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'CPU 使用率',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // 设置背景颜色
+                    borderColor: 'rgba(54, 162, 235, 1)', // 设置边框颜色
+                    borderWidth: 1,
+                    barThickness: 15,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            callback: function (value) {
+                                return value + "%"
+                            }
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false // Hide vertical grid lines
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 20, // 上边距
+                        bottom: 20, // 下边距
+                        left: 20, // 左边距
+                        right: 20 // 右边距
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'black' // 字体颜色
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toFixed(1) + '%'; // Set precision to 2 decimal places for tooltips
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        </script>
+
+        <div class="hbar">
+            <div class="center-div">
+                <h4>CPU 核心数</h4>
+                <div class="cpu-count"></div>
+            </div>
+            <div class="center-div">
+                <h4>CPU 时间 (s)</h4>
+                <ul class="modern-list cpu-times"></ul>
+            </div>
+            <div class="center-div">
+                <h4>CPU 频率 (MHz)</h4>
+                <ul class="modern-list cpu-freq"></ul>
+            </div>
+            <div class="center-div">
+                <h4>CPU 统计</h4>
+                    <ul class="modern-list cpu-stats"></ul>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <script>
+            const hostName = '{{host}}';
+            let socket = io({
+                    query: {hostname: hostName}
+            });
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('updateCPUInfo', function(data) {
+                console.log('Received CPU data');
+                barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
+                barChart.data.datasets[0].data = data.cpu_percent;
+                barChart.update();
+                document.querySelector('.cpu-count').innerText = data.cpu_count;
+                updateList('.cpu-times', data.cpu_times);
+                updateList('.cpu-freq', data.cpu_freq);
+                updateList('.cpu-stats', data.cpu_stats);
+            });
+
+
+
+
+        function updateList(selector, data) {
+            const list = document.querySelector(selector);
+            list.innerHTML = '';
+            for (const [key, value] of Object.entries(data)) {
+                const li = document.createElement('li');
+                li.innerText = `${key}: ${value}`;
+                list.appendChild(li);
+            }
+        }
+        </script>
+
+    </div>
+</body>
+</html>
