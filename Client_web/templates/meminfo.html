@@ -3,6 +3,7 @@
     <meta charset="UTF-8" />
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -201,22 +202,23 @@
         </div>
     <div id="virtual-container" style="width: 700px; height: 600px; margin: 0 auto;margin-top: 50px;"></div>
     <div id="swap-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
-    <script language="JavaScript">
+    <script>
         $(document).ready(function () {
-            // 将 Python 变量嵌入到 JavaScript 中
-            var memoryInfo = {{ memory_info | tojson }};
+// 将 Python 变量嵌入到 JavaScript 中
 
-            // Swap Memory Data
-            var swapTotalMemoryBytes = memoryInfo.swap_mem[0];
-            var swapUsedMemoryBytes = memoryInfo.swap_mem[1];
-            var swapFreeMemoryBytes = memoryInfo.swap_mem[2];
+            // // Swap Memory Data
+            // var swapTotalMemoryBytes = memoryInfo.swap_mem[0];
+            // var swapUsedMemoryBytes = memoryInfo.swap_mem[1];
+            // var swapFreeMemoryBytes = memoryInfo.swap_mem[2];
+            //
+            // // Virtual Memory Data
+            // var virtualTotalMemoryBytes = memoryInfo.virtual_mem[0];
+            // var virtualUsedMemoryBytes = memoryInfo.virtual_mem[3];
+            // var virtualFreeMemoryBytes = memoryInfo.virtual_mem[4];
 
-            // Virtual Memory Data
-            var virtualTotalMemoryBytes = memoryInfo.virtual_mem[0];
-            var virtualUsedMemoryBytes = memoryInfo.virtual_mem[3];
-            var virtualFreeMemoryBytes = memoryInfo.virtual_mem[4];
 
-            // 转换字节到GB
+
+            // Utility function to convert bytes to GB
             var bytesToGB = function (bytes) {
                 return (bytes / (1024 * 1024 * 1024)).toFixed(1);
             };
@@ -283,14 +285,93 @@
                 json.series = series;
                 json.plotOptions = plotOptions;
 
-                $(container).highcharts(json);
+                // $(container).highcharts(json);
+                return Highcharts.chart(container, json);
             };
 
             // Create the two pie charts
-            createPieChart('#virtual-container', 'Virtual Memory', virtualTotalMemoryBytes, virtualUsedMemoryBytes, virtualFreeMemoryBytes);
-            createPieChart('#swap-container', 'Swap Memory', swapTotalMemoryBytes, swapUsedMemoryBytes, swapFreeMemoryBytes);
+            let virtualChart = createPieChart('virtual-container', 'Virtual Memory', 0, 0, 0);
+            let swapChart = createPieChart('swap-container', 'Swap Memory', 0, 0, 0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var updatePieChart = function (chart, titleText, totalMemoryBytes, usedMemoryBytes, freeMemoryBytes) {
+                var totalMemoryGB = bytesToGB(totalMemoryBytes);
+                var usedMemoryGB = bytesToGB(usedMemoryBytes);
+                var freeMemoryGB = bytesToGB(freeMemoryBytes);
+
+                // Update chart title
+                chart.setTitle({ text: titleText });
+
+                // Update series data
+                var series = chart.series[0];
+                series.setData([
+                    { name: 'Used', y: parseFloat(usedMemoryGB) },
+                    { name: 'Free', y: parseFloat(freeMemoryGB) }
+                ]);
+            };
+
+
+            const hostName = '{{ host_name }}';
+            let socket = io({
+                query: {
+                    host_name: hostName,
+                    request_command: 'meminfo',
+                }
+            });
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('update', function(data) {
+                // // Update Virtual Memory chart
+                // updatePieChart(virtualChart, 'Virtual Memory', data.virtual_mem[0], data.virtual_mem[3], data.virtual_mem[4]);
+                //
+                // // Update Swap Memory chart
+                // updatePieChart(swapChart, 'Swap Memory', data.swap_mem[0], data.swap_mem[1], data.swap_mem[2]);
+                updatePieChart(virtualChart, 'Virtual Memory', data.virtual_mem[0], data.virtual_mem[3], data.virtual_mem[4]);
+                updatePieChart(swapChart, 'Swap Memory', data.swap_mem[0], data.swap_mem[1], data.swap_mem[2]);
+            });
         });
     </script>
+
+
+
+
+
+
+        <script>
+
+
+
+        </script>
     </div>
 </body>
 

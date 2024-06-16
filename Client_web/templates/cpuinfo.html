@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <style>
         body {
@@ -210,9 +210,12 @@
 
 
         <script>
-            const hostName = '{{ host }}';
+            const hostName = '{{ host_name }}';
             let socket = io({
-                query: { hostname: hostName }
+                query: {
+                    host_name: hostName,
+                    request_command: 'cpuinfo',
+                }
             });
 
             socket.on('connect', function() {
@@ -223,7 +226,7 @@
                 console.log('Disconnected from server');
             });
 
-            socket.on('updateCPUInfo', function(data) {
+            socket.on('update', function(data) {
                 barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
                 barChart.data.datasets[0].data = data.cpu_percent;
                 barChart.update();

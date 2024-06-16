@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_level_808'
 socketio = SocketIO(app)
 
+
 def get_host_address():
     # 获取本机主机名
     host = socket.gethostname()
@@ -19,8 +20,6 @@ def get_host_address():
 
 HOST = get_host_address()  # 服务器IP地址, which means that the server and the Flask app should be on the same machine
 PORT = 65432  # 服务器端口
-
-
 
 
 def get_ls():
@@ -46,8 +45,7 @@ def get_ls():
         s.close()
 
 
-
-def real_time_cpu(cid, hostname):
+def real_time_updater(cid, host_name, request_command):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.connect((HOST, PORT))
@@ -56,21 +54,13 @@ def real_time_cpu(cid, hostname):
         while status[cid]:
             central_server_request = {
                 "node": "client",
-                "cmd": "cpuinfo",
-                "name": hostname,
+                "cmd": request_command,  # Can be "cpuinfo", "meminfo", "diskinfo" or "procinfo"
+                "name": host_name,
             }
-            request_message = json.dumps(central_server_request).encode('utf-8')
-            s.sendall(request_message)
+            s.sendall(json.dumps(central_server_request).encode('utf-8'))
             recvdata = s.recv(2048)
             return_data = json.loads(recvdata.decode('utf-8'))
-            # return_data = {
-            #     "cpu_count": 2,
-            #     "cpu_percent": [30, 20],
-            #     "cpu_times": '1',
-            #     "cpu_freq": "2",
-            #     "cpu_stats": "3",
-            # }
-            socketio.emit('updateCPUInfo', return_data, room=cid)
+            socketio.emit('update', return_data, room=cid)
             print("Sent\n")
             time.sleep(0.5)
     except socket.error as e:
@@ -79,17 +69,17 @@ def real_time_cpu(cid, hostname):
         s.close()
 
 
-
-
 status = {}
 threads = {}
 
+
 @socketio.on('connect')
 def handle_connection():
-    hostname = request.args.get('hostname')
     cid = request.sid
+    hostname = request.args.get('host_name')
+    request_command = request.args.get('request_command')
     print(f'Client {cid} connected with request hostname {hostname}')
-    thread = threading.Thread(target=real_time_cpu, args=(cid, hostname))
+    thread = threading.Thread(target=real_time_updater, args=(cid, hostname, request_command))
     threads[cid] = thread
     status[cid] = True
     thread.start()
@@ -109,22 +99,6 @@ def handle_disconnect():
 
 
 
-
-
-
-
-
-
-
-
-
-
-# Custom filter to replace underscores with spaces and capitalize the first letter
-@app.template_filter('format_label')
-def format_label(value):
-    return value.replace('_', ' ').capitalize()
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -136,57 +110,30 @@ def ls():
     return render_template('ls.html', data=data)
 
 
-@app.route('/cpuinfo/<host>')
-def cpuinfo(host):
-    return render_template('cpuinfo.html', host=host)
+@app.route('/cpuinfo/<host_name>')
+def cpuinfo(host_name):
+    return render_template('cpuinfo.html', host_name=host_name)
 
 
-@app.route('/meminfo/<host>')
-def meminfo(host):
-    # 这里可以根据实际需要获取更多关于主机的信息
-    data = {
-        "node": "client",
-        "cmd": "meminfo",
-        "name": host,
-    }
-    message = json.dumps(data).encode('utf-8')
-    s.sendall(message)
-    recvdata = s.recv(2048)
-    data = json.loads(recvdata.decode('utf-8'))
-    print(data)
-    return render_template('meminfo.html', memory_info=data)
+@app.route('/meminfo/<host_name>')
+def meminfo(host_name):
+    return render_template('meminfo.html', host_name=host_name)
 
 
-@app.route('/diskinfo/<host>')
-def diskinfo(host):
-    # 这里可以根据实际需要获取更多关于主机的信息
-    data = {
-        "node": "client",
-        "cmd": "diskinfo",
-        "name": host,
-    }
-    message = json.dumps(data).encode('utf-8')
-    s.sendall(message)
-    recvdata = s.recv(2048)
-    data = json.loads(recvdata.decode('utf-8'))
-    print(data)
-    return render_template('diskinfo.html', disk_info=data)
+@app.route('/diskinfo/<host_name>')
+def diskinfo(host_name):
+    return render_template('diskinfo.html', host_name=host_name)
 
 
-@app.route('/procinfo/<host>')
-def procinfo(host):
-    # 这里可以根据实际需要获取更多关于主机的信息
-    data = {
-        "node": "client",
-        "cmd": "procinfo",
-        "name": host,
-    }
-    message = json.dumps(data).encode('utf-8')
-    s.sendall(message)
-    recvdata = s.recv(2048)
-    data = json.loads(recvdata.decode('utf-8'))
-    print(data)
-    return render_template('procinfo.html', procList=data["procinfo"])
+@app.route('/procinfo/<host_name>')
+def procinfo(host_name):
+    return render_template('procinfo.html', host_name=host_name)
+
+
+# Custom filter to replace underscores with spaces and capitalize the first letter
+@app.template_filter('format_label')
+def format_label(value):
+    return value.replace('_', ' ').capitalize()
 
 
 if __name__ == '__main__':
