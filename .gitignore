@@ -4,3 +4,4 @@ Client_web/templates (legacy)
 .idea
 .idea/misc.xml
 .idea/workspace.xml
+*.xml
