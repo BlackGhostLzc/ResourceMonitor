@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Information</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,19 +13,24 @@
             margin: 0;
             padding: 20px;
         }
+
         .container {
-            max-width: 900px;
+            max-width: 1000px;
+            min-height: 1000px;
             margin: 0 auto;
-            background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat; /* Add background pattern */
         }
+
         .header {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .header button {
             /* Add some space between the heading and the button */
             margin: 0 20px 0 0;
@@ -40,19 +43,23 @@
             margin-right: 40px;
             margin-bottom: 20px;
         }
+
         .center-div{
             display: flex;
             flex-direction: column;
             justify-content: flex-start; /* Aligns children to the top */
             align-items: center; /* Centers horizontally */
             padding: 10px; /* Just for spacing */
+            font-size: 20px;
         }
 
         ul.modern-list {
             list-style: none; /* Remove default bullet points */
             padding: 0;
             margin: 0;
+            font-size: 20px;
         }
+
         ul.modern-list li {
             position: relative;
             padding-left: 0; /* Adjust spacing for custom bullet */
@@ -75,9 +82,11 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
+
         .button:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
+
         .button:active {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
@@ -89,9 +98,8 @@
             display: block; /* Make the canvas a block element */
         }
     </style>
+
 </head>
-
-
 <body>
     <div class="container">
         <div class="header">
@@ -101,7 +109,8 @@
             <h1>CPU 信息</h1>
         </div>
 
-        <canvas id="myChart" width="250" height="100"></canvas>
+
+        <canvas id="myChart" width="280" height="180"></canvas>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
         <script>
@@ -119,7 +128,7 @@
                     backgroundColor: 'rgba(54, 162, 235, 0.2)', // 设置背景颜色
                     borderColor: 'rgba(54, 162, 235, 1)', // 设置边框颜色
                     borderWidth: 1,
-                    barThickness: 15,
+                    barThickness: 30,
                 }]
             },
             options: {
@@ -182,29 +191,29 @@
             </div>
             <div class="center-div">
                 <h4>CPU 时间 (s)</h4>
-                <ul class="modern-list cpu-times">
-
-                </ul>
+                <ul class="modern-list cpu-times"></ul>
             </div>
             <div class="center-div">
                 <h4>CPU 频率 (MHz)</h4>
-                <ul class="modern-list cpu-freq">
-
-                </ul>
+                <ul class="modern-list cpu-freq"></ul>
             </div>
             <div class="center-div">
                 <h4>CPU 统计</h4>
-                    <ul class="modern-list cpu-stats">
-
-                    </ul>
+                <ul class="modern-list cpu-stats"></ul>
             </div>
         </div>
 
+
+
+
+
+
+
         <script>
             const hostName = '{{ host }}';
-            let socket = io.connect({
-                    query: { hostname: hostName }
-                    });
+            let socket = io({
+                query: { hostname: hostName }
+            });
 
             socket.on('connect', function() {
                 console.log('Connected to server');
@@ -212,14 +221,12 @@
 
             socket.on('disconnect', function() {
                 console.log('Disconnected from server');
+            });
 
             socket.on('updateCPUInfo', function(data) {
-                console.log('Received CPU data');
-                // Update your chart or DOM here with the received data
                 barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);
                 barChart.data.datasets[0].data = data.cpu_percent;
                 barChart.update();
-
                 document.querySelector('.cpu-count').innerText = data.cpu_count;
                 updateList('.cpu-times', data.cpu_times);
                 updateList('.cpu-freq', data.cpu_freq);
@@ -227,7 +234,7 @@
             });
 
 
-        });
+
 
         function updateList(selector, data) {
             const list = document.querySelector(selector);

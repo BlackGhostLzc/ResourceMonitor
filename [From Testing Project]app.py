@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 import socket
 import json
 import pickle
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO
 import threading
 import time
 
