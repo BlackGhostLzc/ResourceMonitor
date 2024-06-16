@@ -62,7 +62,7 @@ def real_time_updater(cid, host_name, request_command):
             return_data = json.loads(recvdata.decode('utf-8'))
             socketio.emit('update', return_data, room=cid)
             print("Sent\n")
-            time.sleep(0.5)
+            time.sleep(1)
     except socket.error as e:
         raise e
     finally:

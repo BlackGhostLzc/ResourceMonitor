@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
     <title>CPU Information</title>
 
     <style>
@@ -139,20 +142,39 @@
         <h1>Proc 信息</h1>
     </div>
 
-    <table class = "style-table">
-        <tr>
-            <th>PID</th>
-            <th>Process Name</th>
-            <th>CPU Usage (%)</th>
-        </tr>
-        {% for i in range(5) %}
-        <tr>
-            <td>{{ procList[i*3] }}</td>
-            <td>{{ procList[i*3 + 1] }}</td>
-            <td>{{ procList[i*3 + 2] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <table class = "style-table" id="proc-table"></table>
+
+
+    <script>
+        $(document).ready(function () {
+            const hostName = '{{ host_name }}';
+            let socket = io({
+                query: {
+                    host_name: hostName,
+                    request_command: 'procinfo',
+                }
+            });
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('update', function(data) {
+                const procList = data.procinfo;
+                var procTable = $('#proc-table');
+                procTable.empty();
+                procTable.append('<tr> <th>PID</th> <th>Process Name</th> <th>CPU Usage (%)</th> </tr>');
+                for(let i=0; i<5; i++){
+                    procTable.append('<tr><td>' + procList[i*3] + '</td><td>' + procList[i * 3 + 1] + '</td><td>' + procList[i * 3 + 2] + '</td></tr>')
+                }
+            });
+        })
+
+    </script>
 
 </div>
 </body>
