@@ -242,6 +242,8 @@ def handleConn(conn, addr):
 
 
 def listen_for_broadcast():
+    agent_host = {}
+
     udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     udp_sock.bind(('', 12345))  # 12345 是广播端口
@@ -253,8 +255,12 @@ def listen_for_broadcast():
         data = json.loads(message.decode('utf-8'))
 
         if data["node"] == "agent":
-            print(f"Received broadcast from {addr}")
-            start_tcp_connection_agent(data["cmd"], data["name"], addr[0])
+            host = addr[0]
+            if host not in agent_host:
+                print(f"Received broadcast from {addr}")
+                agent_host[host] = 1
+                agent_thread = threading.Thread(target=start_tcp_connection_agent, args=(data["cmd"], data["name"], addr[0]))
+                agent_thread.start()
 
 def start_tcp_connection_agent(cmd, name, host):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
