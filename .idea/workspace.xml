@@ -5,8 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="046a6446-7440-49fb-9ad1-24d2e738208c" name="更改" comment="Finish memory">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Agent/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/Agent/agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Agent/resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/Agent/resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_terminal/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_terminal/display.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/cpuinfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/cpuinfo.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client_web/templates/diskinfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/diskinfo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/ls.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/ls.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/meminfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/meminfo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/procinfo.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/procinfo.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client_web/templates/static/overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/Client_web/templates/static/overview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +70,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "final-version",
-    "last_opened_file_path": "C:/Users/24273/Desktop/SE_Project/Client_terminal/images",
+    "last_opened_file_path": "C:/Users/24273/Desktop/SE_Project/ResourceMonitor",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -116,6 +127,8 @@
       <workItem from="1717831874767" duration="5227000" />
       <workItem from="1717848508168" duration="1197000" />
       <workItem from="1717986653379" duration="5876000" />
+      <workItem from="1718590415587" duration="3898000" />
+      <workItem from="1718612924251" duration="2992000" />
     </task>
     <task id="LOCAL-00001" summary="broadcast">
       <created>1718188802169</created>
@@ -164,13 +177,13 @@
     <option name="LAST_COMMIT_MESSAGE" value="Finish memory" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ResourceMonitor$app.coverage" NAME="app Coverage Results" MODIFIED="1718460949002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
     <SUITE FILE_PATH="coverage/ResourceMonitor$server.coverage" NAME="server Coverage Results" MODIFIED="1718569838211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server" />
-    <SUITE FILE_PATH="coverage/ResourceMonitor$agent.coverage" NAME="agent Coverage Results" MODIFIED="1718569834299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Agent" />
     <SUITE FILE_PATH="coverage/SE_Project$sensor.coverage" NAME="sensor 覆盖结果" MODIFIED="1716105715463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/ResourceMonitor$test_app.coverage" NAME="test_app Coverage Results" MODIFIED="1718467319680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
     <SUITE FILE_PATH="coverage/SE_Project$diskinfo.coverage" NAME="diskinfo 覆盖结果" MODIFIED="1716105209857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/SE_Project$test.coverage" NAME="test 覆盖结果" MODIFIED="1715655425984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/ResourceMonitor$cpuinfo.coverage" NAME="cpuinfo Coverage Results" MODIFIED="1718334677123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ResourceMonitor$agent.coverage" NAME="agent Coverage Results" MODIFIED="1718569834299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Agent" />
+    <SUITE FILE_PATH="coverage/SE_Project$test.coverage" NAME="test 覆盖结果" MODIFIED="1715655425984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
+    <SUITE FILE_PATH="coverage/ResourceMonitor$app.coverage" NAME="app Coverage Results" MODIFIED="1718460949002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
+    <SUITE FILE_PATH="coverage/ResourceMonitor$test_app.coverage" NAME="test_app Coverage Results" MODIFIED="1718467319680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Client_web" />
   </component>
 </project>

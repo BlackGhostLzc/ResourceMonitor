@@ -187,6 +187,30 @@ def handleClientSensorInfo(conn, hostname):
 def handleClientNetInfo(conn, hostname):
     pass
 
+def handleClientOverviewInfo(conn, hostname):
+    agentNodesLock.acquire()
+    agentConn = None
+    for node in AgentNodes:
+        if node.name == hostname:
+            agentConn = node.conn
+            break
+    agentNodesLock.release()
+
+    if agentConn is None:
+        print("No such an agent")
+        conn.sendall("No such an agent")
+        return
+
+    # 2.然后通过 hostconn 向被监控的主机发送命令 cpuinfo
+    print("服务器准备获取 agent 的 overview 数据")
+
+    overviewInfo = cmd.requireOverviewInfoFromAgent(agentConn)
+    print(overviewInfo)
+
+    # 3.得到数据后发送给 conn 客户端
+    conn.sendall(json.dumps(overviewInfo).encode('utf-8'))
+
+
 def handleClient(conn):
     # 这个线程负责处理所有和 client 的交互
     print("A new client comes in")
@@ -223,6 +247,9 @@ def handleClient(conn):
         elif command["cmd"] == "netinfo":
             handleClientNetInfo(conn, command["name"])
             continue
+
+        elif command["cmd"] == "overview":
+            handleClientOverviewInfo(conn, command["name"])
 
     return
 

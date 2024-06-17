@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Hosts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #e0e0e0); /* Add gradient background color */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            min-height: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            background: url('https://www.transparenttextures.com/patterns/connected.png') repeat; /* Add background pattern */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #myChart {
+            width: 800px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        table {
+            font-size: 18px;
+        }
+
+        .style-table {
+            border-collapse: collapse;
+            margin: 50px auto;
+            font-size: 1.2em;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .style-table thead {
+            background-color: #0398dd;
+            color: #ffffff;
+        }
+
+        .style-table tbody tr:first-of-type {
+            background-color: #0398dd;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .style-table th,
+        .style-table td {
+            padding: 12px 15px;
+        }
+
+        .style-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .style-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .style-table tbody tr:last-of-type {
+            border-bottom: 2px solid #0398dd;
+        }
+
+        .custom-button {
+            background-color: #0398dd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            transition-duration: 0.4s;
+        }
+
+        .custom-button:hover {
+            background-color: white;
+            color: #0398dd;
+            border: 2px solid #0398dd;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .button:active {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header button {
+            margin: 0 20px 0 0;
+        }
+
+        .hbar {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-bottom: 20px;
+        }
+        .center-div {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px;
+        }
+
+        ul.modern-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.modern-list li {
+            position: relative;
+            padding-left: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+.battery-container {
+            text-align: center;
+        }
+
+        .battery {
+            width: 600px;
+            height: 100px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            position: relative;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        .battery-level {
+            height: 100%;
+            background-color: #76c7c0;
+            width: 0;
+            border-radius: 5px 0 0 5px;
+            transition: width 0.5s;
+        }
+
+        .battery-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to right, #000 1px, transparent 1px);
+            background-size: 20px 100%;
+            pointer-events: none;
+        }
+
+        .battery-text {
+            margin-top: 10px;
+            font-size: 1.6em;
+        }
+
+        .large-font {
+            font-size: 1.5em;
+        }
+
+        .table-font {
+            font-size: 2.0em;
+        }
+
+        .red-text {
+            color: red;
+        }
+
+        .green-text{
+            color: green
+        }
+
+        .center-text {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <button class="button" onclick="location.href='/ls'" type="button">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>主机{{host}}的Overall信息</h1>
+    </div>
+
+    <h1>电量</h1>
+    <div class="battery">
+        <div class="battery-level" id="battery-level"></div>
+        <div class="battery-grid"></div>
+    </div>
+    <div class="battery-text" id="battery-text"></div>
+
+
+    <h1>CPU</h1>
+    <canvas id="myChart" width="280" height="180"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // 获取 Canvas 元素
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        const cpu_percent = {{overviewInfo.cpu_percent | tojson}}; // 将服务器端的CPU使用率数据渲染为JavaScript数组
+        const labels = cpu_percent.map((_, i) => `CPU ${i}`);
+
+        // 创建柱状图
+        const barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'CPU 使用率',
+                    data: cpu_percent,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // 设置背景颜色
+                    borderColor: 'rgba(54, 162, 235, 1)', // 设置边框颜色
+                    borderWidth: 1,
+                    barThickness: 30,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            callback: function (value) {
+                                return value + "%"
+                            }
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false // Hide vertical grid lines
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 20, // 上边距
+                        bottom: 20, // 下边距
+                        left: 20, // 左边距
+                        right: 20 // 右边距
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: 'black' // 字体颜色
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toFixed(1) + '%'; // Set precision to 2 decimal places for tooltips
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        </script>
+
+
+    <h1>Disk</h1>
+<div id="disk-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
+    <script language="JavaScript">
+        $(document).ready(function () {
+            // 将 Python 变量嵌入到 JavaScript 中
+            var overviewInfo = {{ overviewInfo | tojson }};
+
+            // Swap Memory Data
+            var TotalBytes = overviewInfo.disk_usage[0];
+            var UsedBytes = overviewInfo.disk_usage[1];
+            var FreeBytes = overviewInfo.disk_usage[2];
+
+            // 转换字节到GB
+            var bytesToGB = function (bytes) {
+                return (bytes / (1024 * 1024 * 1024)).toFixed(1);
+            };
+
+            // Function to create pie chart
+            var createPieChart = function (container, titleText, totalBytes, usedBytes, freeBytes) {
+                var totalGB = bytesToGB(totalBytes);
+                var usedGB = bytesToGB(usedBytes);
+                var freeGB = bytesToGB(freeBytes);
+
+                var chart = {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    events: {
+                        render: function () {
+                            var chart = this;
+                            if (!chart.customText) {
+                                chart.customText = chart.renderer.text(
+                                    'Disk Total Size: ' + totalGB + ' GB',
+                                    5, 50  // Adjust Y coordinate to move it down
+                                ).css({
+                                    color: '#FF5733',  // Change text color
+                                    fontSize: '20px'
+                                }).add();
+                            }
+                        }
+                    }
+                };
+                var title = {
+                    text: titleText,
+                    style: {
+                        fontSize: '30px'
+                    }
+                };
+                var tooltip = {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                };
+                var plotOptions = {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y:.1f} GB ({point.percentage:.1f}%)',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                                fontSize: '16px'  // Increase font size
+                            }
+                        }
+                    }
+                };
+
+                var series = [{
+                    name: 'Memory',
+                    data: [
+                        { name: 'Used', y: parseFloat(usedGB) },
+                        { name: 'Free', y: parseFloat(freeGB) }
+                    ]
+                }];
+
+                var json = {};
+                json.chart = chart;
+                json.title = title;
+                json.tooltip = tooltip;
+                json.series = series;
+                json.plotOptions = plotOptions;
+
+                $(container).highcharts(json);
+            };
+
+            // Create the two pie charts
+            createPieChart('#disk-container', 'Disk', TotalBytes, UsedBytes, FreeBytes);
+        });
+    </script>
+
+    <h1>Process</h1>
+
+    <p class="large-font">进程总数：<span class="red-text">{{overviewInfo["procNum"]}}</span></p>
+    <p class="table-font center-text green-text">5 top processes</p>
+
+    <table class = "style-table" style="height: 450px;">
+        <tr>
+            <th>PID</th>
+            <th>Process Name</th>
+            <th>CPU Usage (%)</th>
+        </tr>
+        {% for i in range(5) %}
+        <tr>
+            <td>{{ overviewInfo["top_processes"][i*3] }}</td>
+            <td>{{ overviewInfo["top_processes"][i*3 + 1] }}</td>
+            <td>{{ overviewInfo["top_processes"][i*3 + 2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h1>Network</h1>
+    <table class = "style-table" border="1" style="width: 500px; height: 150px;">
+        <tr>
+            <th>TCP连接数</th>
+            <th>UDP连接数</th>
+        </tr>
+        <tr>
+            <th>{{ overviewInfo["tcp_connections"]}}</th>
+            <th>{{ overviewInfo["udp_connections"]}}</th>
+        </tr>
+    </table>
+
+    <table class="style-table" border="1" style="width: 500px; height: 150px;">
+        <tr>
+            <th>发送速率(bytes/sec)</th>
+            <th>接受速率(bytes/sec)</th>
+        </tr>
+        <tr>
+            <th>{{ overviewInfo["bytes_sent_per_sec"]}}</th>
+            <th>{{ overviewInfo["bytes_recv_per_sec"]}}</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const hostName = '{{ host }}';
+            let socket = io({
+                query: {
+                    host_name: hostName,
+                    request_command: 'overview',
+                }
+            });
+
+            socket.on('connect', function() {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', function() {
+                console.log('Disconnected from server');
+            });
+
+            socket.on('update', function(data) {
+
+                <!--?barChart.data.labels = data.cpu_percent.map((_, i) => `CPU ${i}`);-->
+                <!--?barChart.data.datasets[0].data = data.cpu_percent;-->
+                <!--?barChart.update();-->
+                <!--?document.querySelector('.cpu-count').innerText = data.cpu_count;-->
+                <!--?updateList('.cpu-times', data.cpu_times);-->
+                <!--?updateList('.cpu-freq', data.cpu_freq);-->
+                <!--?updateList('.cpu-stats', data.cpu_stats);-->
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        const batteryLevelElement = document.getElementById('battery-level');
+        const batteryTextElement = document.getElementById('battery-text');
+
+        const overviewInfo = {{ overviewInfo|tojson }};
+        const batteryData = overviewInfo.battery;
+        const batteryLevel = batteryData[0] / 100; // 将电量转换为百分比（例如，95 -> 0.95）
+
+        function updateBatteryLevel(level) {
+            const percentage = level * 100;
+            batteryLevelElement.style.width = `${percentage}%`;
+            batteryTextElement.textContent = `Battery Level: ${percentage.toFixed(0)}%`;
+        }
+        updateBatteryLevel(batteryLevel);
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });
+</script>
+
+</body>
+</html>

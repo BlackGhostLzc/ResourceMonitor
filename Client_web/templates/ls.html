@@ -202,6 +202,7 @@
             <th>Memory</th>
             <th>Disk</th>
             <th>Process</th>
+            <th>Overall</th>
         </tr>
     {% for host in data %}
         <tr>
@@ -212,6 +213,7 @@
             <td><button class="custom-button" type="Mem Info" onclick="memInfo('{{ host[0] }}')">Mem Info</button></td>
             <td><button class="custom-button" type="Disk Info" onclick="diskInfo('{{ host[0] }}')">Disk Info</button></td>
             <td><button class="custom-button" type="Proc Info" onclick="procInfo('{{ host[0] }}')">Proc Info</button></td>
+            <td><button class="custom-button" type="Overall Info" onclick="overallInfo('{{ host[0] }}')">Overall Info</button></td>
         </tr>
     {% endfor %}
     </table>
@@ -228,6 +230,9 @@
         }
         function procInfo(host) {
             window.location.href = '/procinfo/' + host;
+        }
+        function overallInfo(host) {
+            window.location.href = '/overview/' + host;
         }
     </script>
  </div>

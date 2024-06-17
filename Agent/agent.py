@@ -94,6 +94,12 @@ def start_tcp_agent():
                         message = json.dumps(data).encode('utf-8')
                         conn.sendall(message)
 
+                    elif command["cmd"] == "overview":
+                        data = resource.requireOverviewInfo()
+                        print(data)
+                        message = json.dumps(data).encode('utf-8')
+                        s.sendall(message)
+
                     # 可能是需要硬件资源信息
 
                     # 如果是资源的请求

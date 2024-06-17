@@ -27,7 +27,7 @@ def displayLs(list):
         return
 
     curseInit()
-    ls_win = curses.newwin(len(list) + 7, 40, 0, 0)
+    ls_win = curses.newwin(len(list) + 7, 60, 0, 0)
     ls_win.attron(curses.color_pair(1))
     ls_win.border(0)
     ls_win.attroff(curses.color_pair(1))

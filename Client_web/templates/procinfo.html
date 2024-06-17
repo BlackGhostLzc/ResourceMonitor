@@ -4,10 +4,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
-    <title>CPU Information</title>
+    <title>Process Information</title>
 
     <style>
         body {
@@ -139,7 +139,7 @@
         <button class="button" onclick="location.href='/ls'" type="button">
             <i class="fas fa-arrow-left"></i>
         </button>
-        <h1>Proc 信息</h1>
+        <h1>{{host_name}}的Process信息</h1>
     </div>
 
     <table class = "style-table" id="proc-table"></table>
@@ -165,10 +165,20 @@
 
             socket.on('update', function(data) {
                 const procList = data.procinfo;
+                const procNum = data.procnum;
                 var procTable = $('#proc-table');
+
+                var procCountDisplay = $('#proc-count');
+                if (procCountDisplay.length === 0) {
+                    procTable.before('<h2 id="proc-count">Total Processes: ' + procNum + '</h2>');
+                    procTable.before('<h2 id="proc-count">top 10 进程: ' + '</h2>');
+                } else {
+                    procCountDisplay.text('Total Processes: ' + procNum);
+                }
+
                 procTable.empty();
                 procTable.append('<tr> <th>PID</th> <th>Process Name</th> <th>CPU Usage (%)</th> </tr>');
-                for(let i=0; i<5; i++){
+                for(let i=0; i<10; i++){
                     procTable.append('<tr><td>' + procList[i*3] + '</td><td>' + procList[i * 3 + 1] + '</td><td>' + procList[i * 3 + 2] + '</td></tr>')
                 }
             });

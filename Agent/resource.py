@@ -1,3 +1,5 @@
+import time
+import subprocess
 import psutil
 
 def requireCpuInfo():
@@ -91,7 +93,7 @@ def get_top_cpu_processes(n=5, interval=1):
 
 
 def requireProcInfo():
-    top_processes = get_top_cpu_processes(5)
+    top_processes = get_top_cpu_processes(10)
     process_ids = psutil.pids()
     # 进程总数
     procNum = len(process_ids)
@@ -99,6 +101,67 @@ def requireProcInfo():
     data = {
         "procinfo": top_processes,
         "procnum": procNum
+    }
+
+    return data
+
+
+def get_tcp_connections():
+    result = subprocess.run(['powershell', '-Command', 'Get-NetTCPConnection | Measure-Object'], stdout=subprocess.PIPE)
+    output = result.stdout.decode('utf-8', errors='ignore')
+    for line in output.split('\n'):
+        if 'Count' in line:
+            return line.split()[-1]
+
+def get_udp_connections():
+    result = subprocess.run(['powershell', '-Command', 'Get-NetUDPEndpoint | Measure-Object'], stdout=subprocess.PIPE)
+    output = result.stdout.decode('utf-8', errors='ignore')
+    for line in output.split('\n'):
+        if 'Count' in line:
+            return line.split()[-1]
+
+
+def get_network_speed():
+    # 获取初始网络统计信息
+    net_io_start = psutil.net_io_counters()
+    time.sleep(1)  # 等待一秒钟
+    net_io_end = psutil.net_io_counters()
+
+    # 计算速率
+    bytes_sent_per_sec = (net_io_end.bytes_sent - net_io_start.bytes_sent) / 1  # 1秒钟的发送速率
+    bytes_recv_per_sec = (net_io_end.bytes_recv - net_io_start.bytes_recv) / 1  # 1秒钟的接收速率
+
+    return bytes_sent_per_sec, bytes_recv_per_sec
+
+def requireOverviewInfo():
+    # 获取电量
+    battery = psutil.sensors_battery()
+
+    # 获取cpu信息
+    cpu_count = psutil.cpu_count()
+    cpu_percent = psutil.cpu_percent(percpu=True, interval=1)
+    disk_usage = psutil.disk_usage("/")
+
+    top_processes = get_top_cpu_processes(5)
+    process_ids = psutil.pids()
+    # 进程总数
+    procNum = len(process_ids)
+
+    tcp_connections = get_tcp_connections()
+    udp_connections = get_udp_connections()
+    bytes_sent_per_sec, bytes_recv_per_sec = get_network_speed()
+
+    data = {
+        "battery": battery,
+        "cpu_count": cpu_count,
+        "cpu_percent": cpu_percent,
+        "disk_usage": disk_usage,
+        "procNum": procNum,
+        "top_processes": top_processes,
+        "tcp_connections": tcp_connections,
+        "udp_connections": udp_connections,
+        "bytes_sent_per_sec": bytes_sent_per_sec,
+        "bytes_recv_per_sec": bytes_recv_per_sec,
     }
 
     return data

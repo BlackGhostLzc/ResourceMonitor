@@ -130,6 +130,11 @@ def procinfo(host_name):
     return render_template('procinfo.html', host_name=host_name)
 
 
+@app.route('/overview/<host>')
+def overview(host):
+    return render_template('overview.html', host=host)
+
+
 # Custom filter to replace underscores with spaces and capitalize the first letter
 @app.template_filter('format_label')
 def format_label(value):
@@ -137,4 +142,4 @@ def format_label(value):
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=36801)
+    app.run(host='0.0.0.0', port=36801)

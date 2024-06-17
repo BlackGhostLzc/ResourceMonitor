@@ -198,13 +198,13 @@
             <button class="button" onclick="location.href='/ls'" type="button">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>Memory 信息</h1>
+            <h1>{{host_name}}的Memory信息</h1>
         </div>
     <div id="virtual-container" style="width: 700px; height: 600px; margin: 0 auto;margin-top: 50px;"></div>
     <div id="swap-container" style="width: 700px; height: 600px; margin: 0 auto; margin-top: 50px;"></div>
     <script>
         $(document).ready(function () {
-// 将 Python 变量嵌入到 JavaScript 中
+            // 将 Python 变量嵌入到 JavaScript 中
 
             // // Swap Memory Data
             // var swapTotalMemoryBytes = memoryInfo.swap_mem[0];
